@@ -1,5 +1,5 @@
 'use client'
-import loadFilenames, { generateTracks } from "actions/loadLibrary";
+import loadFilenames, { generateTracks, updateDB } from "actions/loadLibrary";
 
 export default function LoadButton(){
 
@@ -7,12 +7,13 @@ export default function LoadButton(){
     try{
       const filenames = await loadFilenames();
       const tracks = await generateTracks(filenames);
+      const result = await updateDB(tracks);
       tracks.map((track)=>{
-        console.log(track);
+        //console.log(track);
       })
       
     } catch (error) {
-      console.error('Error fetching files: ', error);
+      console.error('Error loading: ', error);
     }
 
     

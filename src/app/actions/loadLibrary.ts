@@ -3,7 +3,7 @@ import path from 'path';
 import config from '../../../morg_config/config.json';
 import {walk} from "@root/walk";
 import {File} from "node-taglib-sharp";
-import { Track, Tag, Genre } from 'models';
+import { Track, Tag, Genre, TagType } from 'models';
 import {prisma} from '../../../prisma/client'
 
 
@@ -107,7 +107,59 @@ export async function generateTracks(trackFiles: TrackDir[]): Promise<Track[]>{
 
 //Upload the analysis results to the DB
 export async function updateDB(tracks: Track[]){
-  const existingGenres: Genre[] = await prisma.genre.findMany();
+  const existingGenres: string[] = await getAllGenreNames();
+  const existingTags: string[] = await getAllTagNames();
+
+  let newGenres: string[] = []
+  let newTags:  string[] = []
+
+  for (const track of tracks) {
+    let checkedNewGenres = await checkNewGenres(track, existingGenres);
+    existingGenres.push(...checkedNewGenres);
+    newGenres.push(...checkedNewGenres);
+    
+
+    let checkedNewTags = await checkNewTags(track, existingTags);
+    existingTags.push(...checkedNewTags);
+    newGenres.push(...checkedNewTags);
+  }
+
+  console.log("Existing Genres:",existingGenres);
+  console.log("New Genres:",newGenres);
+  console.log("New Tags:", newTags);
+}
+
+export async function getAllGenres(): Promise <Genre[]>{
+  return await prisma.genre.findMany();
+}
+export async function getAllGenreNames(): Promise<string[]>{
+  const genres = await getAllGenres();
+  const genreNames = genres.map(genre => genre.name);
+  return genreNames;
+}
+
+
+
+export async function checkNewGenres(track: Track, existingGenres: string[]): Promise <string[]>{
+
+  let newGenres: string[] = []
+  try{
+    if(track.genres != null && track.genres.length > 0 ){
+      newGenres = newGenres.concat(track.genres.filter((genre :Genre) => !existingGenres.includes(genre.name)).map(genre => genre.name));
+      
+    }
+  } catch (error) {
+    console.error("Error while checking for new genres:",error);
+  }
+
+  return newGenres;
+}
+
+export async function updateGenres(genres: Genre[]){
+
+}
+
+export async function getAllTags(): Promise <Tag[]>{
   const tags = await prisma.tag.findMany({
     relationLoadStrategy: 'join',
     select:{
@@ -119,12 +171,40 @@ export async function updateDB(tracks: Track[]){
       }
     }
   });
-  const existingTags: Tag[] = tags.map((tag)=>({
+  const allTags: Tag[] = tags.map((tag)=>({
     name: tag.name,
     typeName: tag.type.name
   }));
-  
-  tracks.map((track)=>{
-
-  });
+  return allTags;
 }
+export async function getAllTagNames(): Promise <string[]>{
+  const tags = await getAllTags();
+  const tagNames = tags.map(tag => tag.name);
+  return tagNames;
+}
+
+
+export async function checkNewTags(track: Track, existingTags: string[]): Promise<string[]>{
+  const newTags: string[] = []
+  try{
+    if(track.tags != null && track.tags.length > 0 ){
+      newTags.concat(track.tags.filter(tag => !existingTags.includes(tag.name)).map(tag => tag.name));
+    }
+  } catch (error) {
+    console.error("Error while checking for new tags:",error);
+  }
+
+  return newTags;
+}
+
+export async function updateTags(tags: Tag[]){
+
+}
+
+
+
+
+// export async function getallTagTypes(): Promise <TagType[]>{
+//   const tagTypes = prisma.tag_type.findMany();
+//   return tagTypes;
+// }
