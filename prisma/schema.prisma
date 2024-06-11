@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model track {
+  id        Int     @id @default(autoincrement())
+  filename  String
+  folder    String
+  name      String?
+  artist    String?
+  length    Float
+  bpm       Float?
+  genres    track_genre[]  
+  tags      track_tag[]
+  album     String?
+  label     String?
+  key       String?
+  dateAdded DateTime
+  rating    Int?
+  comments  String?
+}
+
+model genre{
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+}
+
+model tag{
+  id      Int       @id @default(autoincrement())
+  name    String
+  typeId  Int
+  type    tag_type  @relation(fields: [typeId], references: [id])
+}
+
+model tag_type{
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  tags    tag[]
+}
+
+model track_genre {
+  trackId   Int
+  genreId   Int
+  track    track     @relation(fields: [trackId], references: [id])
+
+  @@id([trackId, genreId])
+}
+ 
+model track_tag {
+  trackId   Int
+  tagId     Int 
+  track    track    @relation(fields: [trackId], references: [id])
+
+  @@id([trackId,tagId])
+}

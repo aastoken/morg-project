@@ -12,13 +12,18 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+    "noImplicitAny": false,
     "plugins": [
       {
         "name": "next"
       }
     ],
+    "baseUrl": "./src/app",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@interfaces/*":["src/app/interfaces/*"],
+      "@constants/*":["src/app/models/*"],
+      "@hooks/*":["src/app/hooks/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

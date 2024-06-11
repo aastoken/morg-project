@@ -1,0 +1,10 @@
+appId: com.dashboard
+productName: Dashboard Next
+directories:
+  output: dist
+files:
+  - from: .next
+    to: .next
+  - from: public
+    to: public
+  - main.js

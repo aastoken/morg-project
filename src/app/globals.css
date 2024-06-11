@@ -31,3 +31,19 @@ body {
     text-wrap: balance;
   }
 }
+
+/* .resizer {
+  display: inline-block;
+  width: 10px;
+  cursor: col-resize;
+  user-select: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  
+  &.isResizing {
+    background: red;
+  }
+} */
