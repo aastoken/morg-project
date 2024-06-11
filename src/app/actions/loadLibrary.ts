@@ -32,11 +32,14 @@ export default async function loadFilenames(): Promise<TrackDir[]> {
 
 export async function parseGenres(genresTag: string[]): Promise<Genre[]>{
   const genres: Genre[] = [];
-  
-  genresTag.map((genre)=>{
-    genres.push({name: genre});
+  if(genresTag.length <= 0 || genresTag == undefined)
+    return genres;
+  let genreNames = genresTag[0];
+  let splitGenres = genreNames.split(/[,/;]/)
+  splitGenres.map((genre)=>{
+    genres.push({name: genre.trim()});
   });
-
+  
 
   return genres;
 }
@@ -141,11 +144,12 @@ export async function getAllGenreNames(): Promise<string[]>{
 
 
 export async function checkNewGenres(track: Track, existingGenres: string[]): Promise <string[]>{
+  existingGenres = existingGenres.map(item => item.toLowerCase());//for exact string comparison
 
   let newGenres: string[] = []
   try{
     if(track.genres != null && track.genres.length > 0 ){
-      newGenres = newGenres.concat(track.genres.filter((genre :Genre) => !existingGenres.includes(genre.name)).map(genre => genre.name));
+      newGenres = newGenres.concat(track.genres.filter((genre :Genre) => !existingGenres.includes(genre.name.toLowerCase())).map(genre => genre.name));
       
     }
   } catch (error) {
