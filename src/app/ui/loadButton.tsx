@@ -1,5 +1,5 @@
 'use client'
-import loadFilenames, { generateTracks, updateDB } from "actions/loadLibrary";
+import loadFilenames, { generateTracks, updateDB } from "lib/actions/loadLibrary";
 
 export default function LoadButton(){
 
@@ -9,7 +9,7 @@ export default function LoadButton(){
       const tracks = await generateTracks(filenames);
       const result = await updateDB(tracks);
       tracks.map((track)=>{
-        //console.log(track);
+        console.log(track);
       })
       
     } catch (error) {

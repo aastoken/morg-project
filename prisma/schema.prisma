@@ -23,18 +23,21 @@ model track {
   key       String?
   dateAdded DateTime
   rating    Int?
-  comments  String?
+  comment   String?
+  bitrate   String
 }
 
 model genre{
   id        Int     @id @default(autoincrement())
   name      String  @unique
+  tracks    track_genre[]
 }
 
 model tag{
   id      Int       @id @default(autoincrement())
   name    String
   typeId  Int
+  tracks  track_tag[]
   type    tag_type  @relation(fields: [typeId], references: [id])
 }
 
@@ -47,7 +50,8 @@ model tag_type{
 model track_genre {
   trackId   Int
   genreId   Int
-  track    track     @relation(fields: [trackId], references: [id])
+  track     track     @relation(fields: [trackId], references: [id])
+  genre     genre     @relation(fields: [genreId], references: [id])
 
   @@id([trackId, genreId])
 }
@@ -55,7 +59,8 @@ model track_genre {
 model track_tag {
   trackId   Int
   tagId     Int 
-  track    track    @relation(fields: [trackId], references: [id])
+  track     track    @relation(fields: [trackId], references: [id])
+  tag       tag      @relation(fields: [tagId], references: [id])
 
   @@id([trackId,tagId])
 }

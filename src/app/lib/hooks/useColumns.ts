@@ -1,4 +1,4 @@
-import { Column } from "models/Column";
+import { Column } from "lib/models/Column";
 import { useState } from "react";
 
 export const useColumns = (initialColumns: Column[], defaultWidth: number) => {

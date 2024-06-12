@@ -1,7 +1,7 @@
 'use client';
 import { Resizable } from "react-resizable";
-import { useColumns } from "hooks";
-import { Column } from "models/Column";
+import { useColumns } from "lib/hooks";
+import { Column } from "lib/models/Column";
 
 export default function ExplorerTable({cols, data}){
   const{
