@@ -4,10 +4,11 @@ import config from '../../../../morg_config/config.json';
 import {walk} from "@root/walk";
 import {File} from "node-taglib-sharp";
 import { Track, Tag, Genre, TagType, TrackDir, DBGenre, DBTag } from 'lib/models';
-import {prisma} from '../../../../prisma/client'
-import { addNewTagsToExisting, checkNewGenres, checkNewTags, parseGenres, parseTags } from 'lib/scripts';
-import { getAllGenreNames } from './genreActions';
-import { getAllTagTypeNames, getallTagTypes } from './tagTypeActions';
+import { addNewTagtypesToExisting, checkNewGenres, checkNewTagTypeNames, checkNewTagTypes, checkNewTags, checkNewTracks, parseGenres, parseTags } from 'lib/scripts';
+import { createGenres, getAllGenreNames } from './genreActions';
+import { createTagTypes, getAllTagTypeNames, getallTagTypes } from './tagTypeActions';
+import { createTags, getAllTags } from './tagActions';
+import { createTrack, createTracks, getAllTracks } from './trackActions';
 
 
 
@@ -42,18 +43,18 @@ export async function generateTracks(trackFiles: TrackDir[]): Promise<Track[]>{
       const track: Track = {
         filename: trackDir.filename,
         folder:   trackDir.folder,
-        name:     file.tag.title,
-        artist:   file.tag.firstPerformer,
+        name:     file.tag.title?.replace(/\0/g, '') ?? '',
+        artist:   file.tag.firstPerformer?.replace(/\0/g, '') ?? '',
         length:   file.properties.durationMilliseconds,
         bpm:      file.tag.beatsPerMinute,
         genres:   parseGenres(file.tag.genres),
         tags:     parseTags(file.tag.comment),
-        album:    file.tag.album,
-        label:    file.tag.publisher,
-        key:      file.tag.initialKey,
+        album:    file.tag.album?.replace(/\0/g, '') ?? '',
+        label:    file.tag.publisher?.replace(/\0/g, '') ?? '',
+        key:      file.tag.initialKey?.replace(/\0/g, '') ?? '',
         dateAdded:new Date().toISOString(),
         rating:   0,
-        comment:  file.tag.comment,
+        comment:  file.tag.comment?.replace(/\0/g, '') ?? '',
         bitrate:  file.properties.audioBitrate.toString()+" kbps"
       };
 
@@ -69,24 +70,50 @@ export async function generateTracks(trackFiles: TrackDir[]): Promise<Track[]>{
 //Upload the analysis results to the DB
 export async function updateDB(tracks: Track[]){
   const existingGenres: string[] = await getAllGenreNames();
-  let existingTags: TagType[] = await getallTagTypes();
-  let newGenres: string[] = []
-  let newTags:  TagType[] = await getAllTagTypeNames();
+  const existingTagTypeNames: string[] = await getAllTagTypeNames();
+  const existingTags: Tag[] = await getAllTags();
+  const existingTracks: Track[] = await getAllTracks();
+
+  const newGenres: string[] = [];
+  const newTagTypeNames: string[] = [];
+  const newTags:  Tag[] = [];
+  const newTracks: Track[] = [];
 
   for (const track of tracks) {
     let checkedNewGenres = checkNewGenres(track, existingGenres);
     existingGenres.push(...checkedNewGenres);
     newGenres.push(...checkedNewGenres);
     
-
-    let checkedNewTags = checkNewTags(track, existingTags);
-    newTags = addNewTagsToExisting(newTags,checkedNewTags);
-    existingTags = addNewTagsToExisting(existingTags, checkedNewTags);
-  
+    let checkedNewTagTypeNames = checkNewTagTypeNames(track, existingTagTypeNames);
+    existingTagTypeNames.push(...checkedNewTagTypeNames);
+    newTagTypeNames.push(...checkedNewTagTypeNames);
     
+    let checkedNewTags = checkNewTags(track, existingTags)
+    newTags.push(...checkedNewTags);
+    existingTags.push(...checkedNewTags);
 
+    if(checkNewTracks(track, existingTracks)){    
+      newTracks.push(track);
+      existingTracks.push(track);
+    }
   }
-  console.log("Only new Tags:",newTags);
+  console.log("New genres: ",newGenres);
+  if(newGenres.length > 0){
+    const genres = newGenres.map(name =>({name: name})); 
+    await createGenres(genres);
+  }
+  console.log("New TagTypes:",newTagTypeNames)
+  if(newTagTypeNames.length > 0){
+    await createTagTypes(newTagTypeNames);
+  }
+  console.log("New Tags:",newTags);
+  if(newTags.length > 0){
+    await createTags(newTags);
+  }
+  console.log("New Tracks:", newTracks);
+  if(newTracks.length > 0){
+    await createTracks(tracks);
+  }
 }
 
 

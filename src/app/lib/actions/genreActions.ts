@@ -1,5 +1,6 @@
+'use server';
 import { DBGenre, Genre } from "lib/models";
-import { prisma } from "../../../../prisma/client";
+import prisma  from "../../../../prisma/client";
 
 //Genres--------------------------------------------------------------
 export async function createGenre(genre: Genre): Promise<DBGenre>{
@@ -12,10 +13,23 @@ export async function createGenre(genre: Genre): Promise<DBGenre>{
 
 export async function createGenres(genres: Genre[]){
   const newGenres = await prisma.genre.createMany({
-    data: genres
+    data: genres,
+    skipDuplicates:true 
   });
 
   return newGenres;  
+}
+
+export async function getDBGenres(genres:Genre[]):Promise<DBGenre[]>{
+  const names = genres.map(genre => genre.name);
+  const genreIds = await prisma.genre.findMany({
+    where:{
+      name:{
+        in: names
+      }
+    }
+  })
+  return genreIds.map(result => ({id: result.id, name: result.name}));
 }
 
 export async function getAllGenres(): Promise <Genre[]>{

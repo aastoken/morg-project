@@ -1,13 +1,20 @@
+'use server';
 import { TagType } from "lib/models";
-import { prisma } from "../../../../prisma/client";
+import  prisma  from "../../../../prisma/client";
 
 //TagTypes----------------------------------------------------------
 export async function createTagType(tagType: TagType){
   const newTagType = await prisma.tag_type.create({data: {name: tagType.name}})
+  return newTagType;
 }
 
-export async function createTagTypes(tagTypes: TagType[]){
-  
+export async function createTagTypes(typeNames: string[]){
+  const parsedTagTypes = typeNames.map(typename => ({name: typename}));
+  const newTagTypes = await prisma.tag_type.createMany({
+    data:  parsedTagTypes,
+    skipDuplicates:true 
+  })
+  return newTagTypes;
 }
 
 export async function getallTagTypes(): Promise <TagType[]>{
@@ -29,14 +36,12 @@ export async function getallTagTypes(): Promise <TagType[]>{
   return parsedTagTypes;
 }
 
-export async function getAllTagTypeNames(): Promise <TagType[]>{
+export async function getAllTagTypeNames(): Promise <string[]>{
   const tagTypes = await prisma.tag_type.findMany({
     select:{
       name:true,
     }
   });
-  return tagTypes.map(tag_type => ({
-    name: tag_type.name, 
-    tags: []}))
+  return tagTypes.map(tag_type => (tag_type.name))
 }
 

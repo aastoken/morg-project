@@ -1,5 +1,6 @@
-import { Tag, TagType } from "lib/models";
-import { prisma } from "../../../../prisma/client";
+'use server';
+import { DBTag, Tag, TagType } from "lib/models";
+import  prisma  from "../../../../prisma/client";
 
 //Tags--------------------------------------------------------------
 export async function createTag(tag: Tag){
@@ -50,9 +51,41 @@ export async function createTags(tags: Tag[], tagTypes?: TagType[]){
   });
 
   const newTags = await prisma.tag.createMany({
-    data: dbTags
+    data: dbTags,
+    skipDuplicates:true 
   })
   return newTags;
+}
+
+export async function getDBTags(tags: Tag[]): Promise <DBTag[]>{
+  const tagNames = tags.map(tag => tag.name);
+  const typeNames = tags.map(tag => tag.typeName);
+  const dbTags = await prisma.tag.findMany({
+    where:{
+      AND:[
+      {name:{
+        in: tagNames
+      }},
+      {
+        type:{
+          name:{
+            in:typeNames
+          }
+        }
+      }
+    ]
+    },
+    include:{
+      type:true
+    }
+  });
+
+  return dbTags.map(tag => ({
+    id:tag.id,
+    name:tag.name,
+    typeId:tag.typeId,
+    tagType:tag.type.name}
+  ));
 }
 
 export async function getAllTags(): Promise <Tag[]>{

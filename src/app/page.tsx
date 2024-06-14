@@ -1,20 +1,22 @@
 import Image from "next/image";
 import Explorer from './ui/explorer';
 import LoadButton from "ui/loadButton";
+import ExplorerTable from "ui/explorerTable";
 
 export const dynamic = 'force-dynamic'
 export default function Home() {
   
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="relative flex min-h-screen flex-col items-left ">
       <LoadButton/>
-      <div className="z-10 w-full max-w-5xl items-left justify-between font-mono text-sm lg:flex">
+      <div className="fixed top-1/2 left-0 w-full max-w-full max-h-full h-1/2">
         <Explorer/>
-        
+
       </div>
       
       
     </main>
+   
   );
 }

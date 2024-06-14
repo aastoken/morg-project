@@ -13,7 +13,7 @@ export type Track = {
   album?:     string;
   label?:     string;
   key?:       string;
-  dateAdded?: string;
+  dateAdded:  string;
   rating?:    number;
   comment?:   string;
   bitrate:    string;
@@ -27,12 +27,10 @@ export type DBTrack = {
   artist?:    string;
   length:     number;
   bpm?:       number;
-  genres:     DBGenre[];  
-  tags:       DBTag[];
   album?:     string;
   label?:     string;
   key?:       string;
-  dateAdded?: string;
+  dateAdded:  string;
   rating?:    number;
   comment?:   string;
   bitrate:    string;

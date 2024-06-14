@@ -16,8 +16,8 @@ model track {
   artist    String?
   length    Float
   bpm       Float?
-  genres    track_genre[]  
-  tags      track_tag[]
+  genres    genre[]  
+  tags      tag[]
   album     String?
   label     String?
   key       String?
@@ -30,14 +30,14 @@ model track {
 model genre{
   id        Int     @id @default(autoincrement())
   name      String  @unique
-  tracks    track_genre[]
+  tracks    track[]
 }
 
 model tag{
   id      Int       @id @default(autoincrement())
   name    String
   typeId  Int
-  tracks  track_tag[]
+  tracks  track[]
   type    tag_type  @relation(fields: [typeId], references: [id])
 }
 
@@ -47,20 +47,20 @@ model tag_type{
   tags    tag[]
 }
 
-model track_genre {
-  trackId   Int
-  genreId   Int
-  track     track     @relation(fields: [trackId], references: [id])
-  genre     genre     @relation(fields: [genreId], references: [id])
+// model track_genre {
+//   trackId   Int
+//   genreId   Int
+//   track     track     @relation(fields: [trackId], references: [id])
+//   genre     genre     @relation(fields: [genreId], references: [id])
 
-  @@id([trackId, genreId])
-}
+//   @@id([trackId, genreId])
+// }
  
-model track_tag {
-  trackId   Int
-  tagId     Int 
-  track     track    @relation(fields: [trackId], references: [id])
-  tag       tag      @relation(fields: [tagId], references: [id])
+// model track_tag {
+//   trackId   Int
+//   tagId     Int 
+//   track     track    @relation(fields: [trackId], references: [id])
+//   tag       tag      @relation(fields: [tagId], references: [id])
 
-  @@id([trackId,tagId])
-}
+//   @@id([trackId,tagId])
+// }
