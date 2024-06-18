@@ -1,6 +1,6 @@
 'use server';
-import { DBTag, Tag, TagType } from "lib/models";
-import  prisma  from "../../../../prisma/client";
+import { DBTag, Tag, TagType } from "../models";
+import  prisma  from "../../../prisma/client";
 
 //Tags--------------------------------------------------------------
 export async function createTag(tag: Tag){

@@ -2,7 +2,7 @@ export const initcolumns = [
   {
     name: "name",
     displayName: "Name",
-    width: 800
+    width: 500
   },
   {
     name: "artist",
@@ -63,5 +63,10 @@ export const initcolumns = [
     name: "bitrate",
     displayName: "Bitrate",
     width: 250
+  },
+  {
+    name: "filename",
+    displayName: "File Name",
+    width: 500
   }  
 ]

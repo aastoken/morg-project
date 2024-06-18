@@ -1,9 +1,10 @@
 'use server';
-import { DBTrack, Track } from "lib/models";
-import  prisma  from "../../../../prisma/client";
+import { DBTrack, Track } from "../models";
+import  prisma  from "../../../prisma/client";
 import { getDBGenres } from "./genreActions";
 import { getDBTags } from "./tagActions";
 import { revalidatePath } from 'next/cache';
+import { formatDateTime, millisToMinutes } from '../scripts/data_utils';
 
 export async function createTrack(track:Track) {
 
@@ -125,7 +126,7 @@ export async function getAllTracks(): Promise <Track[]>{
     folder:     track.folder,
     name:       track.name ?? undefined,
     artist:     track.artist ?? undefined,
-    length:     track.length,
+    length:     millisToMinutes(track.length),
     bpm:        track.bpm ?? undefined,
     genres:     track.genres.map(g => ({
                   name: g.name
@@ -137,7 +138,7 @@ export async function getAllTracks(): Promise <Track[]>{
     album:      track.album ?? undefined,
     label:      track.label ?? undefined,
     key:        track.key ?? undefined,
-    dateAdded:  track.dateAdded?.toISOString() ?? undefined,
+    dateAdded:  formatDateTime(track.dateAdded?.toISOString()) ?? undefined,
     rating:     track.rating ?? undefined,
     comment:    track.comment ?? undefined, 
     bitrate:    track.bitrate

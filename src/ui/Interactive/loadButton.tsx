@@ -1,5 +1,5 @@
 'use client'
-import loadFilenames, { generateTracks, updateDB } from "lib/actions/loadLibrary";
+import loadFilenames, { generateTracks, updateDB } from "../../lib/actions/loadLibrary";
 
 export default function LoadButton(){
 
@@ -21,9 +21,10 @@ export default function LoadButton(){
   };
 
   return(
-    <form action={handleLoad}>
-    <button className="rounded-md border p-2 bg-teal-500 hover:bg-teal-100" >
-      LOAD
+    <form action={handleLoad} className="flex flex-col h-fit text-lg">
+      Import all the Tracks inside the Root Folder
+    <button className="rounded-sm border-2 border-white p-2 bg-amber-300 border-spacing-2 hover:bg-amber-100 text-xl w-fit" >
+      IMPORT LIBRARY
     </button>
     </form>
   );

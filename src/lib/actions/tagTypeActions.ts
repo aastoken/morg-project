@@ -1,6 +1,6 @@
 'use server';
-import { TagType } from "lib/models";
-import  prisma  from "../../../../prisma/client";
+import { TagType } from "../models";
+import  prisma  from "../../../prisma/client";
 
 //TagTypes----------------------------------------------------------
 export async function createTagType(tagType: TagType){

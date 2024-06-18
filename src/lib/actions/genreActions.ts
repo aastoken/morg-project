@@ -1,6 +1,6 @@
 'use server';
-import { DBGenre, Genre } from "lib/models";
-import prisma  from "../../../../prisma/client";
+import { DBGenre, Genre } from "../models";
+import prisma  from "../../../prisma/client";
 
 //Genres--------------------------------------------------------------
 export async function createGenre(genre: Genre): Promise<DBGenre>{

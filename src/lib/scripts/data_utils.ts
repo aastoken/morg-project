@@ -1,4 +1,4 @@
-import { Genre, Tag, TagType, Track, isTagTypeArray } from "lib/models";
+import { Genre, Tag, TagType, Track, isTagTypeArray } from "../models";
 
 export function parseGenres(genresTag: string[]): Genre[]{
   const genres: Genre[] = [];
@@ -195,4 +195,43 @@ export function checkNewTracks(track: Track, existingTracks: Track[]): boolean{
     }
   }
   return true;
+}
+
+
+export function millisToMinutes(milliseconds : number){
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  let result = `${minutes} min `;
+  if(seconds !=0){
+    result += `${seconds} s`
+  }
+  return result
+}
+
+export function formatDateTime(dateTimeStr) {
+  const date = new Date(dateTimeStr);
+
+  // Extract date components
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+  const year = date.getFullYear();
+
+  // Extract time components
+  let hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  // Determine AM/PM
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // The hour '0' should be '12'
+  
+  // Format time
+  const formattedTime = `${hours}:${minutes}:${seconds} ${ampm}`;
+
+  // Combine date and time
+  const formattedDateTime = `${day}/${month}/${year} ${formattedTime}`;
+  
+  return formattedDateTime;
 }

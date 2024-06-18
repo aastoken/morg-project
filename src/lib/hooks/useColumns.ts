@@ -1,4 +1,4 @@
-import { Column } from "lib/models/Column";
+import { Column } from "../models/Column";
 import { useState } from "react";
 
 export const useColumns = (initialColumns: Column[], defaultWidth: number) => {
@@ -13,7 +13,7 @@ export const useColumns = (initialColumns: Column[], defaultWidth: number) => {
     if(foundColumnIndex === -1){
       return;
     }
-    console.log("Column Resizing to width: "+ width);
+    //console.log("Column Resizing to width: "+ width);
     updatedColumns[foundColumnIndex].width = Math.floor(width);
     setColumns(updatedColumns);
   }
@@ -22,7 +22,7 @@ export const useColumns = (initialColumns: Column[], defaultWidth: number) => {
     const foundColumn = columns.find(({name: columnName}) => columnName === name);
     
     if(foundColumn){
-      console.log("Width of column:",foundColumn.width);
+      //console.log("Width of column:",foundColumn.width);
       return foundColumn.width
     }
     return defaultWidth;

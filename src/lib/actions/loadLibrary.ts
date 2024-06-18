@@ -1,10 +1,10 @@
 'use server';
 import path from 'path';
-import config from '../../../../morg_config/config.json';
+import config from '../../../morg_config/config.json';
 import {walk} from "@root/walk";
 import {File} from "node-taglib-sharp";
-import { Track, Tag, Genre, TagType, TrackDir, DBGenre, DBTag } from 'lib/models';
-import { addNewTagtypesToExisting, checkNewGenres, checkNewTagTypeNames, checkNewTagTypes, checkNewTags, checkNewTracks, parseGenres, parseTags } from 'lib/scripts';
+import { Track, Tag, Genre, TagType, TrackDir, DBGenre, DBTag } from '../models';
+import { addNewTagtypesToExisting, checkNewGenres, checkNewTagTypeNames, checkNewTagTypes, checkNewTags, checkNewTracks, parseGenres, parseTags } from '../scripts';
 import { createGenres, getAllGenreNames } from './genreActions';
 import { createTagTypes, getAllTagTypeNames, getallTagTypes } from './tagTypeActions';
 import { createTags, getAllTags } from './tagActions';

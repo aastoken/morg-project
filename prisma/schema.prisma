@@ -30,6 +30,7 @@ model track {
 model genre{
   id        Int     @id @default(autoincrement())
   name      String  @unique
+  color     String  @default("#ffffff")
   tracks    track[]
 }
 
@@ -44,6 +45,7 @@ model tag{
 model tag_type{
   id      Int       @id @default(autoincrement())
   name    String    @unique
+  color   String    @default("#ffffff")
   tags    tag[]
 }
 

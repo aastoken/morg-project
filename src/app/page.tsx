@@ -1,22 +1,30 @@
-import Image from "next/image";
-import Explorer from './ui/explorer';
-import LoadButton from "ui/loadButton";
-import ExplorerTable from "ui/explorerTable";
+import Explorer from '../ui/MainComponents/explorer';
+import TrackDetailsWindow from '../ui/MainComponents/trackDetailsWindow';
+import SidePanel from '../ui/MainComponents/sidePanel';
 
 export const dynamic = 'force-dynamic'
 export default function Home() {
   
 
   return (
-    <main className="relative flex min-h-screen flex-col items-left ">
-      <LoadButton/>
-      <div className="fixed top-1/2 left-0 w-full max-w-full max-h-full h-1/2">
-        <Explorer/>
+    <>
+      <SidePanel/>
+      
+      <div className="flex flex-col h-full overflow-hidden">
 
+      
+        <div className="flex-none w-full h-[45%] bg-zinc-300 border-l-2 border-amber-300">
+          <TrackDetailsWindow/>
+        </div>
+
+        <div className="flex-grow overflow-hidden">
+      
+          <Explorer/>
+
+        </div>
       </div>
       
-      
-    </main>
+    </>
    
   );
 }

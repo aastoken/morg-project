@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Dosis } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const dosis = Dosis({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "MORG",
@@ -16,7 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${dosis.className} flex w-full max-h-screen h-screen bg-zinc-300  `} >
+        
+        {children}
+        </body>
     </html>
   );
 }
