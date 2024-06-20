@@ -53,6 +53,9 @@ export default function FilterRow({ deleteRow, setKey }: { deleteRow: () => void
         </input>
       </>
     }
+    else if (numberOptions.includes(selectedComparator) && selectedKey=='Date Added'){
+      element = <input type="date" placeholder="Enter value"></input>
+    }
     else if (numberOptions.includes(selectedComparator)){
       element = <input type="number" placeholder="Enter value"></input>
     }
