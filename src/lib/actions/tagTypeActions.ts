@@ -12,14 +12,14 @@ export async function createTagTypes(typeNames: string[]){
   const parsedTagTypes = typeNames.map(typename => ({name: typename}));
   const newTagTypes = await prisma.tag_type.createMany({
     data:  parsedTagTypes,
-    skipDuplicates:true 
+    //skipDuplicates:true 
   })
   return newTagTypes;
 }
 
 export async function getallTagTypes(): Promise <TagType[]>{
   const tagTypes = await prisma.tag_type.findMany({  
-    relationLoadStrategy: 'join',    
+    //relationLoadStrategy: 'join',    
     select:{
       name: true,
       tags:  {

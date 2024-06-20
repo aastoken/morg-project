@@ -4,8 +4,10 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // provider = "postgresql"
+  // url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model track {
@@ -24,7 +26,7 @@ model track {
   dateAdded DateTime
   rating    Int?
   comment   String?
-  bitrate   String
+  bitrate   Int
 }
 
 model genre{

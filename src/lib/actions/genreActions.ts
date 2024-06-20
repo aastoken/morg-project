@@ -14,7 +14,7 @@ export async function createGenre(genre: Genre): Promise<DBGenre>{
 export async function createGenres(genres: Genre[]){
   const newGenres = await prisma.genre.createMany({
     data: genres,
-    skipDuplicates:true 
+    //skipDuplicates:true 
   });
 
   return newGenres;  

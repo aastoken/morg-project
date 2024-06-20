@@ -1,8 +1,8 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import MenuSelector from './menuSelector';
-import PlaylistBrowser from './playlistBrowser';
-import TagBrowser from './tagBrowser';
+import MenuSelector from './MenuSelector/menuSelector';
+import PlaylistBrowser from './Playlists/playlistBrowser';
+import TagBrowser from './Tags/tagBrowser';
 
 export default function SidePanel(){
 

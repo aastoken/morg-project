@@ -177,3 +177,8 @@ export async function getDBTracks(tracks: Track[]): Promise<DBTrack[]>{
     bitrate: track.bitrate
   }))
 }
+
+export async function deleteAllTracks(){
+  const deletedTracks = await prisma.track.deleteMany({});
+  return deletedTracks;
+}

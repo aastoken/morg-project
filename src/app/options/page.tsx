@@ -1,6 +1,7 @@
-import LoadButton from '../../ui/Interactive/loadButton';
-import RootFolderForm from '../../ui/Interactive/rootFolderForm';
-import MenuSelector from '../../ui/MainComponents/menuSelector';
+import LoadButton from '../../ui/Options/loadButton';
+import RootFolderForm from '../../ui/Options/rootFolderForm';
+import MenuSelector from '../../ui/MainWindow/MenuSelector/menuSelector';
+import DeleteTracksButton from '../../ui/Options/deleteButton';
 
 
 export default function Page(){
@@ -16,6 +17,7 @@ export default function Page(){
       </div>
       <RootFolderForm/>
       <LoadButton/>
+      <DeleteTracksButton/>
     </div>
   </div>
   );

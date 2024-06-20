@@ -55,7 +55,7 @@ export async function generateTracks(trackFiles: TrackDir[]): Promise<Track[]>{
         dateAdded:new Date().toISOString(),
         rating:   0,
         comment:  file.tag.comment?.replace(/\0/g, '') ?? '',
-        bitrate:  file.properties.audioBitrate.toString()+" kbps"
+        bitrate:  file.properties.audioBitrate
       };
 
       return track;

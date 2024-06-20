@@ -52,7 +52,7 @@ export async function createTags(tags: Tag[], tagTypes?: TagType[]){
 
   const newTags = await prisma.tag.createMany({
     data: dbTags,
-    skipDuplicates:true 
+    //skipDuplicates:true 
   })
   return newTags;
 }
@@ -90,7 +90,7 @@ export async function getDBTags(tags: Tag[]): Promise <DBTag[]>{
 
 export async function getAllTags(): Promise <Tag[]>{
   const tags = await prisma.tag.findMany({
-    relationLoadStrategy: 'join',
+    //relationLoadStrategy: 'join',
     select:{
       name: true,
       type: {

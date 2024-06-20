@@ -16,8 +16,26 @@ export type Track = {
   dateAdded:  string;
   rating?:    number;
   comment?:   string;
-  bitrate:    string;
+  bitrate:    number;
 }
+
+export const trackKeys = [
+  'File Name',
+  'Folder',
+  'Name',
+  'Artist',
+  'Length',
+  'BPM',
+  'Genres',
+  'Tags',
+  'Album',
+  'Label',
+  'Key',
+  'Date Added',
+  'Rating',
+  'Comment',
+  'Bitrate'
+];
 
 export type DBTrack = {
   id:         number,
@@ -33,6 +51,6 @@ export type DBTrack = {
   dateAdded:  string;
   rating?:    number;
   comment?:   string;
-  bitrate:    string;
+  bitrate:    number;
 }
 

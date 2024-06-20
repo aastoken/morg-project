@@ -1,11 +1,11 @@
 'use client';
 import { Resizable } from "react-resizable";
-import { useColumns } from "../../lib/hooks";
-import { Column } from "../../lib/models/Column";
-import { Track } from "../../lib/models";
+import { useColumns } from "../../../lib/hooks";
+import { Column } from "../../../lib/models/Column";
+import { Track } from "../../../lib/models";
 import { useEffect, useState } from "react";
-import { getAllTracks } from "../../lib/actions";
-import { initcolumns } from "../../lib/models/columns";
+import { getAllTracks } from "../../../lib/actions";
+import { initcolumns } from "../../../lib/models/columns";
 import "react-resizable/css/styles.css";
 import { Cabin } from "next/font/google";
 
@@ -28,7 +28,7 @@ export default function ExplorerTable(){
     const getData = async () => {
       try {
         const result = await getAllTracks();
-        console.log("Result:",result)
+        //console.log("Result:",result)
         if(result.length >0){
 
           setData(result);
@@ -45,7 +45,7 @@ export default function ExplorerTable(){
   let rows = data;
 
   return (
-    <div className='overflow-y-scroll max-h-full h-full shadow-lg border-l-2 border-r-2 border-amber-400 custom-scrollbar'>
+    <div className='overflow-y-scroll max-h-full h-full shadow-lg border-l-2 border-r-2 border-amber-400 custom-scrollbar bg-slate-800'>
       <table className={`min-w-full w-full table-fixed ${cabin.className} border-l-2 border-r-2 border-amber-400`}>
         <thead className='text-left text-black bg-white sticky -top-0 z-1'>
           <tr>
