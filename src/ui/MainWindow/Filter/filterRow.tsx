@@ -38,35 +38,35 @@ export default function FilterRow({ deleteRow, setKey }: { deleteRow: () => void
     if(selectedComparator == 'range' && selectedKey=='Date Added'){
       element = 
       <>
-        <input type="date" placeholder="Minimum date">
+        <input name="inputValueMin" type="date" placeholder="Minimum date">
         </input>
-        <input type="date" placeholder="Maximum date">
+        <input name="inputValueMax" type="date" placeholder="Maximum date">
         </input>
       </>
     }
     else if (selectedComparator == 'range'){
       element = 
       <>
-        <input type="number" placeholder="Minimum value">
+        <input name="inputValueMin" type="number" placeholder="Minimum value">
         </input>
-        <input type="number" placeholder="Maximum value">
+        <input name="inputValueMax" type="number" placeholder="Maximum value">
         </input>
       </>
     }
     else if (numberOptions.includes(selectedComparator) && selectedKey=='Date Added'){
-      element = <input type="date" placeholder="Enter value"></input>
+      element = <input name="inputValue" type="date" placeholder="Enter value"></input>
     }
     else if (numberOptions.includes(selectedComparator)){
-      element = <input type="number" placeholder="Enter value"></input>
+      element = <input name="inputValue" type="number" placeholder="Enter value"></input>
     }
     else if (stringOptions.includes(selectedComparator) && selectedKey != 'Genres' && selectedKey != 'Tags'){
-      element = <input type="text" placeholder="Enter text"></input>
+      element = <input name="inputValue" type="text" placeholder="Enter text"></input>
     }
     else if (tagGenreOptions.includes(selectedComparator) && selectedKey == 'Genres'){
-      element = <input type="text" placeholder="Select Genres"></input>
+      element = <input name="inputValue" type="text" placeholder="Select Genres"></input>
     }
     else if (tagGenreOptions.includes(selectedComparator) && selectedKey == 'Tags'){
-      element = <input type="text" placeholder="Select Tags"></input>
+      element = <input name="inputValue"  type="text" placeholder="Select Tags"></input>
     }
 
     return element;

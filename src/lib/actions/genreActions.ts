@@ -42,6 +42,22 @@ export async function getAllGenreNames(): Promise<string[]>{
   return genreNames;
 }
 
+export async function getGenresByName(genreName: string): Promise<Genre[]>{
+  const genres = await prisma.genre.findMany({
+    select:{
+      name:true,
+      color: true
+    },
+    where: {
+      name: {
+        contains: genreName
+      }
+    }
+  });
+
+  return genres.map(genre => ({name: genre.name, color: genre.color}));
+}
+
 export async function updateGenre(genre: Genre){
 
 }

@@ -13,7 +13,8 @@
     "jsx": "preserve",
     "incremental": true,
     "noImplicitAny": false,
-    "target": "ES2015",
+    "target": "ES2017",
+    "forceConsistentCasingInFileNames": true,
     "plugins": [
       {
         "name": "next"

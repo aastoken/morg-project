@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "./button";
+import { Button } from "../../button";
 import FilterRow, { AddCondition } from "./filterRow";
 
 let idCounter = 0;

@@ -1,6 +1,6 @@
 import { FunnelIcon } from '@heroicons/react/24/outline';
 import Popup from 'reactjs-popup';
-import ModalFilter from './modalFilter';
+import ModalFilter from '../Filter/modalFilter';
 
 export default function FilterButton(){
 
