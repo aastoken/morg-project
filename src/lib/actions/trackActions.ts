@@ -5,6 +5,7 @@ import { getDBGenres } from "./genreActions";
 import { getDBTags } from "./tagActions";
 import { revalidatePath } from 'next/cache';
 import { formatDateTime, millisToMinutes } from '../scripts/data_utils';
+import { PrismaPromise } from "@prisma/client";
 
 export async function createTrack(track:Track) {
 
@@ -41,13 +42,14 @@ export async function createTrack(track:Track) {
 }
 
 export async function createTracks(tracks: Track[]){
+  let newTracks:PrismaPromise<Track>[]=[];
   for(const track of tracks){
     console.log("Uploading:",track.filename);
     const dbGenres = await getDBGenres(track.genres);
     const connectGenresArray = dbGenres.map(genre => ({id: genre.id}));
     const dbTags = await getDBTags(track.tags);
     const connectTagsArray = dbTags.map(tag => ({id: tag.id }));
-    await prisma.track.create({data:{
+    newTracks.push(prisma.track.create({data:{
       filename:   track.filename,
       folder:     track.folder,
       name:       track.name ?? undefined,
@@ -72,7 +74,9 @@ export async function createTracks(tracks: Track[]){
       genres: true,
       tags: true
     }})
+  )
   }
+  await prisma.$transaction(newTracks)
 }
 
 export async function updateTrack(track:Track){

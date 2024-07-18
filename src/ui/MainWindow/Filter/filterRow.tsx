@@ -74,7 +74,7 @@ export default function FilterRow({ deleteRow, setKey }: { deleteRow: () => void
 
   return(
     <div className="flex items-center justify-between w-full h-8 bg-slate-300 px-2 py-1"> 
-    <div>#{`${setKey}`}</div> 
+    
     <select 
     name = "trackKey"
     className="pl-1"
@@ -121,8 +121,8 @@ export default function FilterRow({ deleteRow, setKey }: { deleteRow: () => void
 export function AddCondition({ onClick }: { onClick: () => void }){
 
   return(
-    <button type="button" onClick={onClick} className="flex w-full h-8 bg-slate-300 px-2 py-1">
-      <PlusIcon/>
+    <button type="button" onClick={onClick} className="flex w-full max-h-8 h-8 bg-slate-300 px-2 py-1">
+      <PlusIcon className="flex flex-shrink max-w-6"/>
       Add Condition
     </button>
   );

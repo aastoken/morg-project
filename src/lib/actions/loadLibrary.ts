@@ -99,7 +99,7 @@ export async function updateDB(tracks: Track[]){
   }
   console.log("New genres: ",newGenres);
   if(newGenres.length > 0){
-    const genres = newGenres.map(name =>({name: name})); 
+    const genres = newGenres.map(name =>({name: name, color: "#ffffff"})); 
     await createGenres(genres);
   }
   console.log("New TagTypes:",newTagTypeNames)

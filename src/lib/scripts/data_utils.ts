@@ -1,4 +1,4 @@
-import { Genre, Tag, TagType, Track, isTagTypeArray } from "../models";
+import { Genre, Tag, TagType, Track } from "../models";
 
 export function parseGenres(genresTag: string[]): Genre[]{
   const genres: Genre[] = [];
@@ -9,7 +9,7 @@ export function parseGenres(genresTag: string[]): Genre[]{
   
   splitGenres.map((genre)=>{
     const cleanGenre = genre.replace(/\0/g, '').trim();
-    genres.push({name: cleanGenre});
+    genres.push({name: cleanGenre, color: "#ffffff"});
   });
   
 
@@ -28,12 +28,14 @@ export function parseTags(tagString: string): Tag[]{
   const energyMatch = tagString.match(energyPattern); 
   if(keyMatch != null){
     tags.push({name: keyMatch[0].toString(),
-            typeName: "Key"});
+              typeName: "Key",
+              color: "#ffffff"});
   }
 
   if(energyMatch != null){
     tags.push({name: energyMatch[0].toString(),
-              typeName: "Energy"});
+              typeName: "Energy",
+              color: "#ffffff"});
   }
 
   const cleanTagString = tagString.replaceAll(keyPattern,'').replaceAll(energyPattern,'').replaceAll('-','')
@@ -43,7 +45,8 @@ export function parseTags(tagString: string): Tag[]{
     if(!spacesPattern.test(name)){
       //TODO - Add a step to check if there are any existing tags with that name and assign them the first match's corresponding type.
       tags.push({name: name,
-        typeName: "Imported"})
+              typeName: "Imported",
+              color: "#ffffff"})
     }
   });
   return tags;
@@ -69,10 +72,10 @@ export function checkNewGenres(track: Track, existingGenres: string[]): string[]
 
 export function checkNewTagTypeNames(track: Track, existingTagTypes: TagType[]|string[]): string[]{
   let existingTypeNames = [''];
-  if(isTagTypeArray(existingTagTypes))
-  {   existingTypeNames = existingTagTypes.map(tagtype => tagtype.name.toLowerCase());}
-  else{
-    existingTypeNames = existingTagTypes.map(name => name.toLowerCase());
+  if (Array.isArray(existingTagTypes) && typeof existingTagTypes[0] === 'string') {
+    existingTypeNames = existingTagTypes.map(name => (name as string).toLowerCase());
+  } else if (Array.isArray(existingTagTypes) && typeof existingTagTypes[0] === 'object') {
+    existingTypeNames = existingTagTypes.map(tagtype => (tagtype as TagType).name.toLowerCase());
   }
 
   let newTypeNames :string[]= [];
@@ -104,20 +107,20 @@ export function checkNewTagTypes(track: Track, existingTagTypes: TagType[]): Tag
     
     //First we check if there are any new typeNames on the track
     let newTypeNames :string[]= checkNewTagTypeNames(track, existingTagTypes);
-    newTagTypes = newTypeNames.map(typeName => ({name: typeName, tags: []}));
+    newTagTypes = newTypeNames.map(typeName => ({name: typeName, tags: [], color: "#ffffff"}));
 
     const updatedTagTypes = existingTagTypes.concat(newTagTypes);
 
    
     newTagTypes = updatedTagTypes.map((tag_type) =>{
        //We access the tag[] of each tag_type to check if there are any new tag names on the track.
-      const lowerCaseTags = tag_type.tags.map(tag => tag.toLowerCase());
+      const lowerCaseTags = tag_type.tags.map(tag => tag.name.toLowerCase());
       const newTags = track.tags
       .filter(tag => tag.typeName.toLowerCase() === tag_type.name.toLowerCase())
       .filter(tag => !lowerCaseTags.includes(tag.name.toLowerCase()))
-      .map(tag => tag.name)
+      .map(tag => ({name: tag.name, color: tag.color, typeName: tag.typeName}))
       
-      return {name: tag_type.name, tags: newTags};
+      return {name: tag_type.name, tags: newTags, color: tag_type.color};
     });
   } catch (error) {
     console.error("Error while checking for new tags:",error);
@@ -136,14 +139,14 @@ export function addNewTagtypesToExisting(existingTagTypes: TagType[], newTagType
   }
   
 
-  let updatedTagTypes = existingTagTypes.concat(newTypeNames.map(typeName => ({name: typeName, tags: []})));//We add the new typenames with empty tag lists
+  let updatedTagTypes = existingTagTypes.concat(newTypeNames.map(typeName => ({name: typeName, tags: [], color: "#ffffff"})));//We add the new typenames with empty tag lists and white color
   //We populate the taglists of existing and new typenames with the new tags
   updatedTagTypes = updatedTagTypes.map((existingTagType) =>{
     //We access the tag[] of each tag_type to check if there are any new tag names on the track.
-   const existingLowerCaseTags = existingTagType.tags.map(tag => tag.toLowerCase());
+   const existingLowerCaseTags = existingTagType.tags.map(tag => tag.name.toLowerCase());
    for (const newTagType of newTagTypes){
     if(newTagType.name.toLowerCase() === existingTagType.name.toLowerCase()){
-      const newTags = newTagType.tags.filter(newTag => !existingLowerCaseTags.includes(newTag.toLowerCase()));
+      const newTags = newTagType.tags.filter(newTag => !existingLowerCaseTags.includes(newTag.name.toLowerCase()));
       existingTagType.tags = existingTagType.tags.concat(newTags); 
     } 
    }
@@ -156,7 +159,7 @@ export function addNewTagtypesToExisting(existingTagTypes: TagType[], newTagType
 
 export function checkNewTags(track: Track, existingTags: Tag[]): Tag[]{
   let newTags: Tag[] = [];
-  let trackTags: Tag[] = track.tags.map(tag => ({name: tag.name, typeName: tag.typeName}));
+  let trackTags: Tag[] = track.tags.map(tag => ({name: tag.name, typeName: tag.typeName, color: tag.color}));
 
   
 
