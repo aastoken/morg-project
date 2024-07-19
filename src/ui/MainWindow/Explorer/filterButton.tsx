@@ -5,7 +5,7 @@ import ModalFilter from '../Filter/modalFilter';
 export default function FilterButton(){
 
   return(
-    <Popup trigger={<button className="flex w-fit h-full p-2 bg-white"> <FunnelIcon className='flex w-[24px]'/> </button>} modal>    
+    <Popup trigger={<button className="flex w-fit h-full p-2 bg-white"> <FunnelIcon className='flex w-[24px]'/> </button>} modal nested>    
       <ModalFilter/> 
     </Popup>
     

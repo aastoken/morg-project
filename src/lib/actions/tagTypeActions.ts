@@ -80,7 +80,7 @@ export async function getTagsFromTagTypesByName(tagName:string): Promise <TagTyp
   const parsedTagTypes: TagType[] = tagTypes.map(tag_type => ({
     name: tag_type.name,
     color: tag_type.color, 
-    tags: tag_type.tags.map(tag => ({name: tag.name, color: tag_type.color}))}))
+    tags: tag_type.tags.map(tag => ({name: tag.name, color: tag_type.color, typeName: tag_type.name}))}))
 
   return parsedTagTypes;
 }

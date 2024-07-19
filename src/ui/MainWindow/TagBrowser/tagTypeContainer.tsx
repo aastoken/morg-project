@@ -1,14 +1,10 @@
 import { useEffect, useState } from 'react';
 import { TagType } from '../../../lib/models/TagType';
+import { Tag } from '../../../lib/models';
+import { hexToRgba } from '../../../lib/scripts/toolbox';
 
-const hexToRgba = (hex, alpha) => {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
-  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
 
-export default function TagTypeContainer({tag_type,isOpenByDefault}:{tag_type:TagType, isOpenByDefault:boolean}){
+export default function TagTypeContainer({tag_type,isOpenByDefault, onTagClick}:{tag_type:TagType, isOpenByDefault:boolean, onTagClick: (tag: Tag) => void}){
 
   const [isOpen, setIsOpen] = useState(isOpenByDefault);
   useEffect(()=>{
@@ -38,6 +34,7 @@ export default function TagTypeContainer({tag_type,isOpenByDefault}:{tag_type:Ta
               key={index}
               style={{ backgroundColor: tag.color }}
               className="flex rounded-md h-6 w-fit p-2 items-center mt-1 cursor-pointer"
+              onClick={() => onTagClick({name: tag.name, typeName: tag.typeName, color: tag.color})}
             >
               {tag.name}
             </div>

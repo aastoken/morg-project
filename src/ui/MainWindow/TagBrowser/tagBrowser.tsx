@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { getTagsFromTagTypesByName } from "../../../lib/actions";
-import { TagType } from "../../../lib/models";
+import { Tag, TagType } from "../../../lib/models";
 import TagTypeContainer from "./tagTypeContainer";
 import { useDebouncedCallback } from "use-debounce";
 
-export default function TagBrowser(){
+export default function TagBrowser({onTagSelect}:{onTagSelect :(tag: Tag)=> void}){
   const tagTypes: TagType[] = [];
   const [data, setData] = useState(tagTypes);
   const [tagQuery, setTagQuery] = useState("");
@@ -47,7 +47,7 @@ export default function TagBrowser(){
       
       <div className="overflow-y-auto min-h-0 max-h-[calc(100%-38px)] flex flex-col items-start gap-2 pr-2 ml-1">
         
-        {data.map((tag_type,index) => (<TagTypeContainer key={index} tag_type={tag_type} isOpenByDefault={open}/>))}
+        {data.map((tag_type,index) => (<TagTypeContainer key={index} tag_type={tag_type} isOpenByDefault={open} onTagClick={onTagSelect}/>))}
         
       </div>
     </>
