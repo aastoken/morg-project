@@ -6,30 +6,30 @@ import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 
 export default function TagTypeDetail({tag_type, onTagClick}:{tag_type: TagType, onTagClick:(tag: Tag)=>void}){
 
-  const backdropColor = hexToRgba(tag_type.color, 0.3);
+  const backdropColor = hexToRgba(tag_type.color, 0.5);
   return(
     <div 
         style={{ backgroundColor: backdropColor }}
-        className='flex flex-row justify-start align-text-bottom h-fit w-full max-w-full flex-wrap rounded-md'>
+        className='flex flex-wrap justify-start align-text-bottom text-sm  w-full max-w-full rounded-md gap-1'>
           <div 
           style={{ backgroundColor: tag_type.color }}
-          className='flex items-center h-6 px-2 mr-1 rounded-sm'>
+          className='flex items-center h-4 px-1 mr-1 rounded-sm'>
             {tag_type.name}
-            
+            <EllipsisVerticalIcon className='w-4'/>  
           </div>
-          <EllipsisVerticalIcon className='w-5'/>
-          <div className="flex flex-row gap-2 ">
+          
+          
             {tag_type.tags.map((tag, index) => (
               <div
                 key={index}
                 style={{ backgroundColor: tag.color }}
-                className="flex rounded-md h-6 px-2 w-fit items-center cursor-pointer hover:bg-red-600"
+                className="flex rounded-sm h-4 px-1 w-fit items-center text-nowrap  cursor-pointer hover:text-red-500"
                 onClick={() => onTagClick({name: tag.name, typeName: tag.typeName, color: tag.color})}
               >
                 {tag.name}
               </div>
             ))}
-          </div>
+          
           
     </div>
   )

@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useMemo, useState } from "react";
-import { ArrowDownCircleIcon, ChevronDownIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Track, trackKeys } from '../../../lib/models/Track';
 import Popup from "reactjs-popup";
 import GenreBrowser from "../GenreBrowser/genreBrowser";
@@ -119,10 +119,10 @@ export default function FilterRow({ deleteRow, setKey }: { deleteRow: () => void
     }
     else if (tagGenreOptions.includes(selectedComparator) && selectedKey == 'Tags'){
       element = <div className="flex w-full max-w-full h-full">
-                  <div className="flex-grow pl-1 align-middle overflow-y-auto bg-slate-100" id="inputValue">
+                  <div className="flex-grow pl-1 align-middle overflow-y-auto bg-slate-500" id="inputValue">
                     <TagTypesVisualizer tag_types={getTagTypesFromTagArray(selectedTags)} onTagSelect={handleTagSelect}/>
                   </div>
-                  <Popup trigger={<div className="flex w-1/12 h-full p-1 align-middle bg-amber-300" id="inputValue"><ChevronDownIcon className="w-full"/></div>} 
+                  <Popup trigger={<div className="flex w-1/12 h-full p-1 align-middle bg-amber-300" id="inputValue"><PencilSquareIcon className="w-5"/></div>} 
                   modal
                   position='top center'>    
                     <div className="flex flex-col relative justify-start w-[400px] max-h-[400px] top-0 left-1/3  bg-slate-600 border-2 p-1 ">
@@ -138,7 +138,7 @@ export default function FilterRow({ deleteRow, setKey }: { deleteRow: () => void
   }
 
   return(
-    <div className="flex items-center justify-between w-full h-24 bg-slate-300 px-2 py-1"> 
+    <div className="flex items-center justify-between w-full h-16 bg-slate-300 px-2 py-1"> 
     
     <select 
     name = "trackKey"
