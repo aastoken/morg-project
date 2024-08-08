@@ -6,7 +6,8 @@ import { getGenresByName } from "../../../lib/actions";
 
 
 
-export default function GenreBrowser(){
+
+export default function GenreBrowser({onGenreSelect}:{onGenreSelect :(genre: Genre)=> void}){
 
   const genres: Genre[] = [];
   const [data, setData] = useState(genres);
@@ -42,7 +43,7 @@ export default function GenreBrowser(){
       
       <div className="overflow-y-auto min-h-0 max-h-[calc(100%-38px)] flex flex-col items-start gap-2 pr-2 ml-1">
         
-        {data.map((genre,index) => (<GenreContainer key={index} genre={genre}/>))}
+        {data.map((genre,index) => (<GenreContainer key={index} genre={genre} onGenreClick={onGenreSelect}/>))}
         
       </div>
     </>

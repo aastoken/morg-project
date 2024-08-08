@@ -5,8 +5,9 @@ import { Track, trackKeys } from '../../../lib/models/Track';
 import Popup from "reactjs-popup";
 import GenreBrowser from "../GenreBrowser/genreBrowser";
 import TagBrowser from "../TagBrowser/tagBrowser";
-import { Tag, TagType } from "../../../lib/models";
+import { Genre, Tag, TagType } from "../../../lib/models";
 import TagTypesVisualizer from "../TagBrowser/tagTypesVisualizer";
+import GenresVisualizer from "../GenreBrowser/genresVisualizer";
 
 const stringOptions = ['equals','contains','not equals','not contains']
 const numberOptions = ['=','<','>','<=','>=','range']
@@ -45,19 +46,20 @@ function getTagTypesFromTagArray(tags: Tag[]): TagType[]{
 }
 
 
-export default function FilterRow({ deleteRow, setKey }: { deleteRow: () => void, setKey: number }){
+export default function FilterRow({ deleteRow }: { deleteRow: () => void }){
 
   const [selectedKey, setSelectedKey] = useState<string | undefined>(trackKeys[0]);
   const [selectedComparator, setSelectedComparator] = useState<string>(stringOptions[0]);
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]) 
+  const [selectedGenres, setSelectedGenres] = useState<Genre[]>([])
 
   useEffect(() => {
     // Set the default comparator based on the selected key
     setSelectedComparator(dynamicOptions[selectedKey as keyof typeof dynamicOptions]?.[0] || '');
 
     
-    console.log("Selected Tags: ", selectedTags)
-  }, [selectedKey, selectedTags]);
+
+  }, [selectedKey]);
 
 
 
@@ -73,6 +75,22 @@ export default function FilterRow({ deleteRow, setKey }: { deleteRow: () => void
         );
       } else {
         return [...prevSelectedTags, selectedTag];
+      }
+    });
+  };
+
+  const handleGenreSelect = (selectedGenre: Genre) => {
+    setSelectedGenres((prevSelectedGenres) => {
+      const isGenreSelected = prevSelectedGenres.some(
+        (genre) => genre.name === selectedGenre.name
+      );
+
+      if (isGenreSelected) {
+        return prevSelectedGenres.filter(
+          (genre) => !(genre.name === selectedGenre.name)
+        );
+      } else {
+        return [...prevSelectedGenres, selectedGenre];
       }
     });
   };
@@ -108,30 +126,32 @@ export default function FilterRow({ deleteRow, setKey }: { deleteRow: () => void
       element = <input className="w-full h-full pl-1" name="inputValue" type="text" placeholder="Enter text"></input>
     }
     else if (tagGenreOptions.includes(selectedComparator) && selectedKey == 'Genres'){
-      element = <Popup trigger={<input className="w-full h-full pl-1 overflow-auto" name="inputValue" type="text" placeholder="Select Genres">
-        
-        </input>} modal>    
-                  <div className="flex flex-col fixed w-1/3 h-1/3 top-1/3 left-1/3 bg-slate-600 border-2 p-1 pt-2">
-                  <GenreBrowser/>
+      element = <div className="flex w-full max-w-full h-full">
+                  <div className="flex-grow pl-1 content-center overflow-y-auto bg-slate-500" id="inputValue">
+                    <GenresVisualizer genres={selectedGenres} onGenreSelect={handleGenreSelect}/>
                   </div>
-                </Popup>
-
+                  <Popup trigger={<div className="flex w-1/12 h-full p-1 justify-center bg-amber-300" id="inputValue"><PencilSquareIcon className="w-5"/></div>} 
+                  modal
+                  >    
+                    <div className="flex flex-col relative justify-start w-[400px] max-h-[400px] top-0 left-1/3  bg-slate-600 border-2 p-1 ">
+                      <GenreBrowser onGenreSelect={handleGenreSelect}/>
+                    </div>
+                  </Popup>
+                </div>
     }
     else if (tagGenreOptions.includes(selectedComparator) && selectedKey == 'Tags'){
       element = <div className="flex w-full max-w-full h-full">
                   <div className="flex-grow pl-1 align-middle overflow-y-auto bg-slate-500" id="inputValue">
                     <TagTypesVisualizer tag_types={getTagTypesFromTagArray(selectedTags)} onTagSelect={handleTagSelect}/>
                   </div>
-                  <Popup trigger={<div className="flex w-1/12 h-full p-1 align-middle bg-amber-300" id="inputValue"><PencilSquareIcon className="w-5"/></div>} 
+                  <Popup trigger={<div className="flex w-1/12 h-full p-1 justify-center bg-amber-300" id="inputValue"><PencilSquareIcon className="w-5"/></div>} 
                   modal
-                  position='top center'>    
+                  >    
                     <div className="flex flex-col relative justify-start w-[400px] max-h-[400px] top-0 left-1/3  bg-slate-600 border-2 p-1 ">
                       <TagBrowser onTagSelect={handleTagSelect}/>
                     </div>
                   </Popup>
                 </div>
-      
-      
     }
 
     return element;
@@ -169,7 +189,7 @@ export default function FilterRow({ deleteRow, setKey }: { deleteRow: () => void
         ))}
     </select>
     
-    <div className="flex items-center justify-evenly  w-3/6 h-5/6">
+    <div className="flex items-center justify-evenly  w-3/6 h-[90%]">
     {
       handleInputType()
     }

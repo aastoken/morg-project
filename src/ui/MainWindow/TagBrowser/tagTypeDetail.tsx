@@ -1,7 +1,7 @@
 import { TagType } from '../../../lib/models/TagType';
 import { Tag } from '../../../lib/models';
 import { hexToRgba } from '../../../lib/scripts/toolbox';
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline';
+import { EllipsisVerticalIcon, MinusIcon, PauseIcon, SunIcon } from '@heroicons/react/24/outline';
 
 
 export default function TagTypeDetail({tag_type, onTagClick}:{tag_type: TagType, onTagClick:(tag: Tag)=>void}){
@@ -10,12 +10,12 @@ export default function TagTypeDetail({tag_type, onTagClick}:{tag_type: TagType,
   return(
     <div 
         style={{ backgroundColor: backdropColor }}
-        className='flex flex-wrap justify-start align-text-bottom text-sm  w-full max-w-full rounded-md gap-1'>
+        className='flex flex-wrap pr-1 justify-start items-center text-sm  w-fit max-w-full rounded-sm gap-1'>
           <div 
           style={{ backgroundColor: tag_type.color }}
-          className='flex items-center h-4 px-1 mr-1 rounded-sm'>
+          className='flex items-center h-5 px-1 py-2 mr-1 rounded-sm border-gray-950 border-2'>
             {tag_type.name}
-            <EllipsisVerticalIcon className='w-4'/>  
+              
           </div>
           
           
@@ -23,7 +23,7 @@ export default function TagTypeDetail({tag_type, onTagClick}:{tag_type: TagType,
               <div
                 key={index}
                 style={{ backgroundColor: tag.color }}
-                className="flex rounded-sm h-4 px-1 w-fit items-center text-nowrap  cursor-pointer hover:text-red-500"
+                className="flex rounded-sm h-5 px-1 py-2 w-fit items-center text-nowrap  cursor-pointer hover:text-red-500"
                 onClick={() => onTagClick({name: tag.name, typeName: tag.typeName, color: tag.color})}
               >
                 {tag.name}

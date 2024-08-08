@@ -17,7 +17,7 @@ export default function ModalFilter(){
 
   const addFilterRow = () => {
     const id = generateId();
-    setFilterRows([...filterRows,  <FilterRow key={id} deleteRow={() => deleteFilterRow(id)} setKey={id}/>]);
+    setFilterRows([...filterRows,  <FilterRow key={id} deleteRow={() => deleteFilterRow(id)}/>]);
   };
 
   const deleteFilterRow = (id: number) => {
