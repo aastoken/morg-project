@@ -23,9 +23,7 @@ export default function ExplorerTable(){
     handleResize,
     getColumnWidth,
   } = useColumns(initcols, 250);
-  
-  useEffect(() => {
-    const getData = async () => {
+  const getData = async () => {
       try {
         const result = await getAllTracks();
         //console.log("Result:",result)
@@ -38,6 +36,8 @@ export default function ExplorerTable(){
         console.error('Error fetching data:', error);
       }
     };
+  useEffect(() => {
+    
 
     getData();
   }, []);
