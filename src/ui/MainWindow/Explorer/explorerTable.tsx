@@ -27,10 +27,9 @@ export default function ExplorerTable({explorerQuery, onTrackSelect}:{explorerQu
       try {
         const result = await getFilteredTracks(explorerQuery); //await getAllTracks();
         //console.log("Result:",result)
-        if(result.length >0){
-
-          setData(result);
-        }
+        
+        setData(result);
+        
         
       } catch (error) {
         console.error('Error fetching data:', error);
