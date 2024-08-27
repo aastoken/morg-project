@@ -4,7 +4,7 @@ import { useColumns } from "../../../lib/hooks";
 import { Column } from "../../../lib/models/Column";
 import { Track } from "../../../lib/models";
 import { useEffect, useState } from "react";
-import { getAllTracks } from "../../../lib/actions";
+import { getAllTracks, getFilteredTracks } from "../../../lib/actions";
 import { initcolumns } from "../../../lib/models/columns";
 import "react-resizable/css/styles.css";
 import { Cabin } from "next/font/google";
@@ -12,7 +12,7 @@ import { Cabin } from "next/font/google";
 const cabin = Cabin({ subsets: ["latin"] });
 
 
-export default function ExplorerTable(){
+export default function ExplorerTable({explorerQuery, onTrackSelect}:{explorerQuery, onTrackSelect : (track:Track)=> void}){
   
   const tracks: Track[] = []
   const initcols: Column[] = initcolumns;
@@ -25,7 +25,7 @@ export default function ExplorerTable(){
   } = useColumns(initcols, 250);
   const getData = async () => {
       try {
-        const result = await getAllTracks();
+        const result = await getFilteredTracks(explorerQuery); //await getAllTracks();
         //console.log("Result:",result)
         if(result.length >0){
 
@@ -40,9 +40,13 @@ export default function ExplorerTable(){
     
 
     getData();
-  }, []);
+  }, [explorerQuery]);
 
   let rows = data;
+
+  const handleRowClick = (track: Track) => {
+    onTrackSelect(track);
+  };
 
   return (
     <div className='overflow-y-scroll max-h-full h-full shadow-lg border-l-2 border-r-2 border-amber-400 custom-scrollbar bg-slate-800'>
@@ -66,7 +70,10 @@ export default function ExplorerTable(){
         </thead>
         <tbody>
           {rows.map((row, index) =>(
-            <tr key ={index} tabIndex={index} className='border-gray-500 border-b-2 text-white odd:bg-slate-800 even:bg-slate-700  hover:bg-slate-500 focus:bg-amber-200 focus:text-black active:bg-orange-300 active:text-black  z-2 '>
+            <tr key ={index} 
+                tabIndex={index} 
+                className='border-gray-500 border-b-2 text-white odd:bg-slate-800 even:bg-slate-700  hover:bg-slate-500 focus:bg-amber-200 focus:text-black active:bg-orange-300 active:text-black  z-2 '
+                onClick={() => handleRowClick(row)}>
               {columns.map((column, colIndex) =>{
                 const cellValue = row[column.name];
                 return(

@@ -4,21 +4,28 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import FilterButton from './filterButton';
+import { Prisma } from '@prisma/client';
 
-export default function Search({ placeholder }: { placeholder: string }) {
-  const searchParams = useSearchParams();
-  const pathName = usePathname();
-  const {replace} = useRouter();
+export default function Search({ setSearchFilter }:{setSearchFilter:(any) => void}) {
 
   const handleSearch= useDebouncedCallback((term: string) => {
-    const params = new URLSearchParams(searchParams);
-    //params.set('page', '1');
-    if(term){
-      params.set('query',term);
-    } else {
-      params.delete('query');
-    }
-    replace(`${pathName}?${params.toString()}`);
+    const query = {
+      where: {
+        OR: [
+          { filename: { contains: term } },
+          { folder: { contains: term } },
+          { name: { contains: term } },
+          { artist: { contains: term } },
+          { album: { contains: term } },
+          { label: { contains: term } },
+          { key: { contains: term } },
+          { comment: { contains: term } }
+        ],
+      },
+    };
+
+    setSearchFilter(query);
+    console.log("searchFilter set to", query)
   }, 300);
 
   return (
@@ -29,11 +36,11 @@ export default function Search({ placeholder }: { placeholder: string }) {
       <input
         className="peer block w-full rounded-sm border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
         id="search" 
-        placeholder={placeholder}
+        placeholder="Search..."
         onChange={(e)=>{
           handleSearch(e.target.value);
         }}
-        defaultValue={searchParams.get('query')?.toString()}
+        defaultValue=""
       />
       <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
       

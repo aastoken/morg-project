@@ -5,7 +5,7 @@ import { getDBGenres } from "./genreActions";
 import { getDBTags } from "./tagActions";
 import { revalidatePath } from 'next/cache';
 import { formatDateTime, millisToMinutes } from '../scripts/data_utils';
-import { PrismaPromise } from "@prisma/client";
+import { Prisma, PrismaPromise } from "@prisma/client";
 
 export async function createTrack(track:Track) {
 
@@ -180,6 +180,33 @@ export async function getDBTracks(tracks: Track[]): Promise<DBTrack[]>{
     comment: track.comment ?? undefined,
     bitrate: track.bitrate
   }))
+}
+
+export async function getFilteredTracks(query: Prisma.trackFindManyArgs): Promise<Track[]>{
+  const tracks = await prisma.track.findMany(query);
+  
+  return tracks.map((track)=>({
+    filename:   track.filename,
+    folder:     track.folder,
+    name:       track.name ?? undefined,
+    artist:     track.artist ?? undefined,
+    length:     millisToMinutes(track.length),
+    bpm:        track.bpm ?? undefined,
+    genres:     track.genres.map(g => ({
+                  name: g.name
+                })),
+    tags:       track.tags.map(t => ({
+                  name: t.name,
+                  typeName: t.type.name
+                })),
+    album:      track.album ?? undefined,
+    label:      track.label ?? undefined,
+    key:        track.key ?? undefined,
+    dateAdded:  formatDateTime(track.dateAdded?.toISOString()) ?? undefined,
+    rating:     track.rating ?? undefined,
+    comment:    track.comment ?? undefined, 
+    bitrate:    track.bitrate
+  }));
 }
 
 export async function deleteAllTracks(){

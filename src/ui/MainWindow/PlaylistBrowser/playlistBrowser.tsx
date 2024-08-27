@@ -1,6 +1,6 @@
 
 
-export default function PlaylistBrowser(){
+export default function PlaylistBrowser({setPlaylistFilter}){
 
   return(
     <div>

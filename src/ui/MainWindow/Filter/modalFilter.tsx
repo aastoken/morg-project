@@ -34,7 +34,7 @@ const dynamicOptions = {
   'Bitrate':numberOptions
   };
 
-export default function ModalFilter(){
+export default function ModalFilter({setAdvancedFilter}:{setAdvancedFilter:(any)=>void}){
 
   const [allConditions, setAllConditions] = useState<boolean>(true);
   const [filterRowsData, setFilterRowsData] = useState<
@@ -107,6 +107,8 @@ export default function ModalFilter(){
     console.log("Filter data:", filterRowsData);
     console.log("ALL Conditions:",allConditions)
     // Your form submission logic here
+    const explorerQuery = ""
+    setAdvancedFilter(explorerQuery)
   };
 
   return(

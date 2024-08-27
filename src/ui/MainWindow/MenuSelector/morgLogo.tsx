@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default function MorgLogo(){
 
   return(
-    <Link className='min-w-32 w-32'
+    <Link className='min-w-24 w-24'
     href="/">
       <Image 
       src='/Logo.png'

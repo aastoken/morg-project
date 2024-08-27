@@ -11,22 +11,23 @@ datasource db {
 }
 
 model track {
-  id        Int     @id @default(autoincrement())
-  filename  String
-  folder    String
-  name      String?
-  artist    String?
-  length    Float
-  bpm       Float?
-  genres    genre[]  
-  tags      tag[]
-  album     String?
-  label     String?
-  key       String?
-  dateAdded DateTime
-  rating    Int?
-  comment   String?
-  bitrate   Int
+  id              Int     @id @default(autoincrement())
+  filename        String  
+  folder          String  
+  name            String?
+  artist          String?
+  length          Float
+  bpm             Float?
+  genres          genre[]  
+  tags            tag[]
+  album           String?
+  label           String?
+  key             String?
+  dateAdded       DateTime
+  rating          Int?
+  comment         String?
+  bitrate         Int
+  playlistTracks  playlist_track[] 
 }
 
 model genre{
@@ -51,20 +52,22 @@ model tag_type{
   tags    tag[]
 }
 
-// model track_genre {
-//   trackId   Int
-//   genreId   Int
-//   track     track     @relation(fields: [trackId], references: [id])
-//   genre     genre     @relation(fields: [genreId], references: [id])
+model playlist {
+  id          Int            @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  tracks      playlist_track[] 
+}
 
-//   @@id([trackId, genreId])
-// }
- 
-// model track_tag {
-//   trackId   Int
-//   tagId     Int 
-//   track     track    @relation(fields: [trackId], references: [id])
-//   tag       tag      @relation(fields: [tagId], references: [id])
+model playlist_track {
+  id         Int      @id @default(autoincrement())
+  playlist   playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  playlistId Int
+  track      track    @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId    Int
+  order      Int     
 
-//   @@id([trackId,tagId])
-// }
+  @@unique([playlistId, order]) // Ensure that the order is unique within a playlist
+}
