@@ -79,7 +79,7 @@ const dBLabels = {
   'Bitrate':"bitrate"
   };
 
-function buildRowQuery(existingQuery,
+function buildRowQuery(
   {
   selectedKey,
   selectedComparator,
@@ -90,19 +90,18 @@ function buildRowQuery(existingQuery,
   inputValueMax
   }:FilterRow
 ) {
+  let conditionQuery = {}
   selectedKey = dBLabels[selectedKey] //We translate the Label string to the db attribute name
   console.log("Key:",selectedKey,"Comparator:",selectedComparator)
   console.log("InputValue",inputValue,inputValueMin,inputValueMax,"Genres",selectedGenres,"Tags",selectedTags)
   // Handle the basic key-comparator-value conditions
   if (selectedComparator && comparators[selectedComparator]) {
     if (selectedComparator === 'inRange' || selectedComparator === 'dateInRange') {
-      existingQuery = {
-        ...existingQuery,
+      conditionQuery = {
         ...comparators[selectedComparator](selectedKey, inputValueMin, inputValueMax)
       };
     } else {
-      existingQuery = {
-        ...existingQuery,
+      conditionQuery = {
         ...comparators[selectedComparator](selectedKey, inputValue)
       };
     }
@@ -111,18 +110,15 @@ function buildRowQuery(existingQuery,
   // Handle tag-based filtering
   if (selectedTags && selectedTags.length > 0) {
     if (selectedComparator === 'contains all') {
-      existingQuery = {
-        ...existingQuery,
+      conditionQuery = {
         ...comparators.containsAll('tags', selectedTags)
       };
     } else if (selectedComparator === 'contains some') {
-      existingQuery = {
-        ...existingQuery,
+      conditionQuery = {
         ...comparators.containsSome('tags', selectedTags)
       };
     } else if (selectedComparator === 'not contains') {
-      existingQuery = {
-        ...existingQuery,
+      conditionQuery = {
         ...comparators.notContainsArray('tags', selectedTags)
       };
     }
@@ -131,50 +127,45 @@ function buildRowQuery(existingQuery,
   // Handle genre-based filtering
   if (selectedGenres && selectedGenres.length > 0) {
     if (selectedComparator === 'contains all') {
-      existingQuery = {
-        ...existingQuery,
+      conditionQuery = {
         ...comparators.containsAll('genres', selectedGenres)
       };
     } else if (selectedComparator === 'contains some') {
-      existingQuery = {
-        ...existingQuery,
+      conditionQuery = {
         ...comparators.containsSome('genres', selectedGenres)
       };
     } else if (selectedComparator === 'not contains') {
-      existingQuery = {
-        ...existingQuery,
+      conditionQuery = {
         ...comparators.notContainsArray('genres', selectedGenres)
       };
     }
   }
-  console.log("Returning row query:",existingQuery)
-  return existingQuery;
+  console.log("Returning row query:",conditionQuery)
+  return conditionQuery;
 }
 
 export function buildAdvancedQuery(filterRowsData : FilterRow[], allConditions: boolean){
   let explorerQuery = {}
-  let conditionsQuery = {}
+  let conditionsQuery: object[] = []
+
   for(const row of filterRowsData){
-    conditionsQuery=  {
-      
-      ...buildRowQuery(conditionsQuery, row)
-    }
+    conditionsQuery.push(buildRowQuery(row))    
   }
+  console.log("ConditionsQuery", conditionsQuery)
+  
   if(allConditions){
     explorerQuery = {
       where:{
-        AND:[
-          conditionsQuery
-        ]
+        AND: conditionsQuery
+        
       }
     }
   }
   else{
     explorerQuery = {
       where:{
-        OR:[
-          conditionsQuery
-        ]
+        OR: conditionsQuery
+        
       }
     }
   }
