@@ -9,8 +9,8 @@ import { DBGenre, DBTag, DBTagType, Genre, Tag, TagType } from "../../../lib/mod
 import TagTypesVisualizer from "../TagBrowser/tagTypesVisualizer";
 import GenresVisualizer from "../GenreBrowser/genresVisualizer";
 
-const stringOptions = ['equals','contains','not equals','not contains']
-const numberOptions = ['=','<','>','<=','>=','range']
+const stringOptions = ['contains','not contains','equals','not equals']
+const numberOptions = ['<','>','=','<=','>=','range']
 const tagGenreOptions = ['contains all','contains some','not contains']
 
 const dynamicOptions = {
@@ -50,9 +50,9 @@ export default function FilterRow({ rowData, deleteRow, updateRow }: { rowData: 
 
 
 
-  useEffect(() => {
-    updateRow({ selectedComparator: dynamicOptions[rowData.selectedKey]?.[0] || '' });
-  }, [rowData.selectedKey]);
+  // useEffect(() => {
+  //   updateRow({ selectedComparator: dynamicOptions[rowData.selectedKey]?.[0] || '' });
+  // }, [rowData.selectedKey]);
 
 
 
@@ -192,7 +192,11 @@ export default function FilterRow({ rowData, deleteRow, updateRow }: { rowData: 
       name = "trackKey"
       className="pl-1 w-1/6 h-5/6"
       value={rowData.selectedKey}
-      onChange={(e) => updateRow({ selectedKey: e.target.value })}
+      onChange={(e) => {
+        const newKey = e.target.value;
+        const newComparator = dynamicOptions[newKey]?.[0] || '';
+        updateRow({ selectedKey: newKey, selectedComparator: newComparator });
+      }}
       >
         {trackKeys.map((key,index) =>(
           <option 
