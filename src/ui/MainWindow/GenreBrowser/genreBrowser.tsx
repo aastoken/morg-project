@@ -1,15 +1,15 @@
 import { useDebouncedCallback } from "use-debounce";
-import { Genre } from "../../../lib/models";
+import { DBGenre, Genre } from "../../../lib/models";
 import GenreContainer from "./genreContainer";
 import { useEffect, useState } from "react";
-import { getGenresByName } from "../../../lib/actions";
+import { getDBGenresByName, getGenresByName } from "../../../lib/actions";
 
 
 
 
-export default function GenreBrowser({onGenreSelect}:{onGenreSelect :(genre: Genre)=> void}){
+export default function GenreBrowser({onGenreSelect}:{onGenreSelect :(genre: DBGenre)=> void}){
 
-  const genres: Genre[] = [];
+  const genres: DBGenre[] = [];
   const [data, setData] = useState(genres);
   const [genreQuery, setGenreQuery] = useState("");
 
@@ -21,7 +21,7 @@ export default function GenreBrowser({onGenreSelect}:{onGenreSelect :(genre: Gen
     const getData = async () => {
       try {       
         //console.log("Tag Query:",tagQuery)
-        const result = await getGenresByName(genreQuery);
+        const result = await getDBGenresByName(genreQuery);
         //console.log("Result:",result)
         
           setData(result);

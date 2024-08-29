@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { TagType } from '../../../lib/models/TagType';
-import { Tag } from '../../../lib/models';
+import { DBTagType, TagType } from '../../../lib/models/TagType';
+import { DBTag, Tag } from '../../../lib/models';
 import { hexToRgba } from '../../../lib/scripts/toolbox';
 
 
-export default function TagTypeContainer({tag_type,isOpenByDefault, onTagClick}:{tag_type:TagType, isOpenByDefault:boolean, onTagClick: (tag: Tag) => void}){
+export default function TagTypeContainer({tag_type,isOpenByDefault, onTagClick}:{tag_type:DBTagType, isOpenByDefault:boolean, onTagClick: (tag: DBTag) => void}){
 
   const [isOpen, setIsOpen] = useState(isOpenByDefault);
   useEffect(()=>{
@@ -34,7 +34,7 @@ export default function TagTypeContainer({tag_type,isOpenByDefault, onTagClick}:
               key={index}
               style={{ backgroundColor: tag.color }}
               className="flex rounded-md h-6 w-fit p-2 items-center mt-1 cursor-pointer"
-              onClick={() => onTagClick({name: tag.name, typeName: tag.typeName, color: tag.color})}
+              onClick={() => onTagClick({id: tag.id, name: tag.name, typeId: tag.typeId, typeName: tag.typeName, color: tag.color})}
             >
               {tag.name}
             </div>

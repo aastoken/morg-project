@@ -1,5 +1,5 @@
 'use server';
-import { TagType } from "../models";
+import { DBTagType, TagType } from "../models";
 import  prisma  from "../../../prisma/client";
 
 //TagTypes----------------------------------------------------------
@@ -81,6 +81,47 @@ export async function getTagsFromTagTypesByName(tagName:string): Promise <TagTyp
     name: tag_type.name,
     color: tag_type.color, 
     tags: tag_type.tags.map(tag => ({name: tag.name, color: tag_type.color, typeName: tag_type.name}))}))
+
+  return parsedTagTypes;
+}
+
+export async function getDBTagsFromTagTypesByName(tagName:string): Promise <DBTagType[]>{
+  const tagTypes = await prisma.tag_type.findMany({  
+    //relationLoadStrategy: 'join',    
+    select: {
+      id: true,
+      name: true,
+      color: true,
+      tags: {
+        select: {
+          name: true,
+          id: true
+        },
+        where: {
+          name: {
+            contains: tagName
+          }
+        },
+        orderBy: {
+          name: 'asc'
+        }
+      }
+    },
+    where: {
+      tags: {
+        some: {
+          name: {
+            contains: tagName
+          }
+        }
+      }
+    }
+  });
+  const parsedTagTypes: DBTagType[] = tagTypes.map(tag_type => ({
+    id: tag_type.id,
+    name: tag_type.name,
+    color: tag_type.color, 
+    tags: tag_type.tags.map(tag => ({id: tag.id, name: tag.name, color: tag_type.color, typeName: tag_type.name, typeId: tag_type.id}))}))
 
   return parsedTagTypes;
 }

@@ -1,8 +1,8 @@
-import { Tag, TagType } from "../../../lib/models";
+import { DBTag, DBTagType, Tag, TagType } from "../../../lib/models";
 import TagTypeDetail from "./tagTypeDetail";
 
 
-export default function TagTypesVisualizer({tag_types, onTagSelect}:{tag_types: TagType[], onTagSelect:(tag: Tag)=>void}){
+export default function TagTypesVisualizer({tag_types, onTagSelect}:{tag_types: DBTagType[], onTagSelect:(tag: DBTag)=>void}){
 
 
   return(

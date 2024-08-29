@@ -1,4 +1,4 @@
-import { Tag } from "./Tag";
+import { DBTag, Tag } from "./Tag";
 
 
 export type TagType = {
@@ -11,5 +11,6 @@ export type DBTagType = {
   id:     number;
   color:  string;
   name:   string;
+  tags:   DBTag[];
 }
 

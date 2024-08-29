@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { getTagsFromTagTypesByName } from "../../../lib/actions";
-import { Tag, TagType } from "../../../lib/models";
+import { getDBTagsFromTagTypesByName } from "../../../lib/actions";
+import { DBTag, DBTagType, Tag, TagType } from "../../../lib/models";
 import TagTypeContainer from "./tagTypeContainer";
 import { useDebouncedCallback } from "use-debounce";
 
-export default function TagBrowser({onTagSelect}:{onTagSelect :(tag: Tag)=> void}){
-  const tagTypes: TagType[] = [];
+export default function TagBrowser({onTagSelect}:{onTagSelect :(tag: DBTag)=> void}){
+  const tagTypes: DBTagType[] = [];
   const [data, setData] = useState(tagTypes);
   const [tagQuery, setTagQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -24,7 +24,7 @@ export default function TagBrowser({onTagSelect}:{onTagSelect :(tag: Tag)=> void
           setOpen(false);
         }
         //console.log("Tag Query:",tagQuery)
-        const result = await getTagsFromTagTypesByName(tagQuery);
+        const result = await getDBTagsFromTagTypesByName(tagQuery);
         //console.log("Result:",result)
         
           setData(result);

@@ -5,7 +5,7 @@ import { Track, trackKeys } from '../../../lib/models/Track';
 import Popup from "reactjs-popup";
 import GenreBrowser from "../GenreBrowser/genreBrowser";
 import TagBrowser from "../TagBrowser/tagBrowser";
-import { Genre, Tag, TagType } from "../../../lib/models";
+import { DBGenre, DBTag, DBTagType, Genre, Tag, TagType } from "../../../lib/models";
 import TagTypesVisualizer from "../TagBrowser/tagTypesVisualizer";
 import GenresVisualizer from "../GenreBrowser/genresVisualizer";
 
@@ -31,12 +31,12 @@ const dynamicOptions = {
   'Bitrate':numberOptions
   };
 
-function getTagTypesFromTagArray(tags: Tag[]): TagType[]{
-  const tagTypeMap: Map<string, TagType> = new Map();
+function getTagTypesFromTagArray(tags: DBTag[]): DBTagType[]{
+  const tagTypeMap: Map<string, DBTagType> = new Map();
 
   tags.forEach(tag => {
     if (!tagTypeMap.has(tag.typeName)) {
-      tagTypeMap.set(tag.typeName, { name: tag.typeName, color: tag.color, tags: [] });
+      tagTypeMap.set(tag.typeName, {id:tag.typeId, name: tag.typeName, color: tag.color, tags: [] });
     }
 
     tagTypeMap.get(tag.typeName)!.tags.push(tag);
@@ -56,7 +56,7 @@ export default function FilterRow({ rowData, deleteRow, updateRow }: { rowData: 
 
 
 
-  const handleTagSelect = (selectedTag: Tag) => {
+  const handleTagSelect = (selectedTag: DBTag) => {
     updateRow({
       selectedTags: rowData.selectedTags.some(tag => tag.name === selectedTag.name)
         ? rowData.selectedTags.filter(tag => tag.name !== selectedTag.name)
@@ -64,7 +64,7 @@ export default function FilterRow({ rowData, deleteRow, updateRow }: { rowData: 
     });
   };
 
-  const handleGenreSelect = (selectedGenre: Genre) => {
+  const handleGenreSelect = (selectedGenre: DBGenre) => {
     updateRow({
       selectedGenres: rowData.selectedGenres.some(genre => genre.name === selectedGenre.name)
         ? rowData.selectedGenres.filter(genre => genre.name !== selectedGenre.name)
@@ -159,7 +159,7 @@ export default function FilterRow({ rowData, deleteRow, updateRow }: { rowData: 
                   <Popup trigger={<div className="flex w-1/12 h-full p-1 justify-center bg-amber-300" id="inputValue"><PencilSquareIcon className="w-5"/></div>} 
                   modal
                   >    
-                    <div className="flex flex-col relative justify-start w-[400px] max-h-[400px] top-0 left-1/3 bg-slate-600 border-2 p-1 ">
+                    <div className="flex flex-col relative justify-start w-[400px] max-h-[400px] top-0 left-full bg-slate-600 border-2 p-1 ">
                       <GenreBrowser onGenreSelect={handleGenreSelect}/>
                     </div>
                   </Popup>
@@ -170,10 +170,12 @@ export default function FilterRow({ rowData, deleteRow, updateRow }: { rowData: 
                   <div className="flex-grow pl-1 align-middle overflow-y-auto bg-slate-100" id="inputValue">
                     <TagTypesVisualizer tag_types={getTagTypesFromTagArray(rowData.selectedTags)} onTagSelect={handleTagSelect}/>
                   </div>
-                  <Popup trigger={<div className="flex w-1/12 h-full p-1 justify-center bg-amber-300" id="inputValue"><PencilSquareIcon className="w-5"/></div>} 
+                  <Popup 
+                  trigger={<div className="flex w-1/12 h-full p-1 justify-center bg-amber-300" id="inputValue"><PencilSquareIcon className="w-5"/></div>} 
+                  position={"bottom center"}
                   modal
                   >    
-                    <div className="flex flex-col relative justify-start w-[400px] max-h-[400px] top-0 left-1/3 bg-slate-600 border-2 p-1 ">
+                    <div className="flex flex-col relative justify-start w-[400px] max-h-[400px] top-0  bg-slate-600 border-2 p-1 ">
                       <TagBrowser onTagSelect={handleTagSelect}/>
                     </div>
                   </Popup>

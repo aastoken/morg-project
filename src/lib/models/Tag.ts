@@ -8,6 +8,6 @@ export type DBTag = {
   id:       number;
   name:     string;
   color:    string;
-  tagType:  string;
+  typeName: string;
   typeId:   number;
 }

@@ -43,7 +43,7 @@ export default function Explorer({playlistFilter, onTrackSelect}:{playlistFilter
   useEffect(() => {
     const updatedQuery = mergeQueries(playlistFilter, advancedFilter, searchFilter)
     setExplorerQuery(updatedQuery)
-    console.log("Updated Explorer Query", explorerQuery)
+    console.log("Updated Explorer Query", updatedQuery)
   }, [playlistFilter, advancedFilter, searchFilter]);
 
   return(

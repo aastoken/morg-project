@@ -1,9 +1,9 @@
-import { Genre } from "../../../lib/models";
+import { DBGenre, Genre } from "../../../lib/models";
 import GenreDetail from "./genreDetail";
 
 
 
-export default function GenresVisualizer({genres, onGenreSelect}:{genres: Genre[], onGenreSelect:(genre: Genre)=>void}){
+export default function GenresVisualizer({genres, onGenreSelect}:{genres: DBGenre[], onGenreSelect:(genre: DBGenre)=>void}){
 
 
   return(
