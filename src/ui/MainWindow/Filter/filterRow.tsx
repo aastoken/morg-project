@@ -158,8 +158,13 @@ export default function FilterRow({ rowData, deleteRow, updateRow }: { rowData: 
                   </div>
                   <Popup trigger={<div className="flex w-1/12 h-full p-1 justify-center bg-amber-300" id="inputValue"><PencilSquareIcon className="w-5"/></div>} 
                   modal
+                  nested
+                  position={['right center']}
+                  contentStyle={{
+                   marginRight: '50px'
+                 }}
                   >    
-                    <div className="flex flex-col relative justify-start w-[400px] max-h-[400px] top-0 left-full bg-slate-600 border-2 p-1 ">
+                    <div className="flex flex-col relative justify-start w-[400px] max-h-[400px] top-0  bg-slate-600 border-2 p-1 ">
                       <GenreBrowser onGenreSelect={handleGenreSelect}/>
                     </div>
                   </Popup>
@@ -171,9 +176,13 @@ export default function FilterRow({ rowData, deleteRow, updateRow }: { rowData: 
                     <TagTypesVisualizer tag_types={getTagTypesFromTagArray(rowData.selectedTags)} onTagSelect={handleTagSelect}/>
                   </div>
                   <Popup 
-                  trigger={<div className="flex w-1/12 h-full p-1 justify-center bg-amber-300" id="inputValue"><PencilSquareIcon className="w-5"/></div>} 
-                  position={"bottom center"}
+                  trigger={<div className="flex w-1/12 h-full p-1 justify-center bg-amber-300" id="inputValue"><PencilSquareIcon className="w-5"/></div>}                   
                   modal
+                  nested
+                  position={['right center']}
+                  contentStyle={{
+                   marginRight: '50px'
+                 }}
                   >    
                     <div className="flex flex-col relative justify-start w-[400px] max-h-[400px] top-0  bg-slate-600 border-2 p-1 ">
                       <TagBrowser onTagSelect={handleTagSelect}/>
