@@ -4,4 +4,5 @@ export * from "./Track";
 export * from "./Genre";
 export * from "./Column";
 export * from "./TrackDir";
-export * from "./FilterRow";
+export * from "./Filter";
+export * from "./Playlist";

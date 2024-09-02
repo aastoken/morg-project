@@ -48,14 +48,6 @@ function getTagTypesFromTagArray(tags: DBTag[]): DBTagType[]{
 
 export default function FilterRow({ rowData, deleteRow, updateRow }: { rowData: any, deleteRow: () => void, updateRow: (data: any) => void }) {
 
-
-
-  // useEffect(() => {
-  //   updateRow({ selectedComparator: dynamicOptions[rowData.selectedKey]?.[0] || '' });
-  // }, [rowData.selectedKey]);
-
-
-
   const handleTagSelect = (selectedTag: DBTag) => {
     updateRow({
       selectedTags: rowData.selectedTags.some(tag => tag.name === selectedTag.name)

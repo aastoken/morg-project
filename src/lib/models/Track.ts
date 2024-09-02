@@ -45,6 +45,8 @@ export type DBTrack = {
   artist?:    string;
   length:     number;
   bpm?:       number;
+  genres:     DBGenre[];  
+  tags:       DBTag[];
   album?:     string;
   label?:     string;
   key?:       string;
@@ -54,3 +56,10 @@ export type DBTrack = {
   bitrate:    number;
 }
 
+export type PlaylistTrack = {
+  id: number,
+  trackId: number,
+  playlistId: number,
+  track: DBTrack,
+  order: number 
+}

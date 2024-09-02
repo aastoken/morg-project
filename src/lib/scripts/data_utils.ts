@@ -1,4 +1,4 @@
-import { Genre, Tag, TagType, Track } from "../models";
+import { FilterData, DBGenre, DBTag, FilterRow, Genre, Playlist, PlaylistTrack, Tag, TagType, Track } from "../models";
 
 export function parseGenres(genresTag: string[]): Genre[]{
   const genres: Genre[] = [];
@@ -237,4 +237,86 @@ export function formatDateTime(dateTimeStr) {
   const formattedDateTime = `${day}/${month}/${year} ${formattedTime}`;
   
   return formattedDateTime;
+}
+
+export function mapDBTag(tag): DBTag {
+  return {
+    id: tag.id,
+    name: tag.name,
+    color: tag.type.color,
+    typeId: tag.typeId,
+    typeName: tag.type.name,
+  };
+}
+
+// Helper function to map Prisma Genre to DBGenre
+export function mapDBGenre(genre): DBGenre {
+  return {
+    id: genre.id,
+    name: genre.name,
+    color: genre.color,
+  };
+}
+
+// Helper function to map Prisma FilterRow to FilterRow
+export function mapFilterRow(row): FilterRow {
+  return {
+    id: row.id,
+    selectedKey: row.selectedKey,
+    selectedComparator: row.selectedComparator,
+    selectedTags: row.selectedTags.map(mapDBTag),
+    selectedGenres: row.selectedGenres.map(mapDBGenre),
+    inputValue: row.inputValue ?? '',
+    inputValueMin: row.inputValueMin ?? '',
+    inputValueMax: row.inputValueMax ?? '',
+  };
+}
+
+// Helper function to map Prisma AdvancedFilterData to AdvancedFilterData
+export function mapAdvancedFilterData(data): FilterData {
+  return {
+    id: data.id,
+    allConditions: data.allConditions,
+    filterRows: data.filterRows.map(mapFilterRow),
+  };
+}
+
+// Helper function to map Prisma PlaylistTrack to PlaylistTrack
+export function mapPlaylistTrack(track): PlaylistTrack {
+  return {
+    id: track.id,
+    order: track.order,
+    trackId: track.trackId,
+    playlistId: track.playlistId,
+    track: {
+      id: track.track.id,
+      filename: track.track.filename,
+      folder: track.track.folder,
+      name: track.track.name ?? '',
+      artist: track.track.artist ?? '',
+      length: track.track.length,
+      bpm: track.track.bpm ?? 0,
+      genres: track.track.genres.map(mapDBGenre),
+      tags: track.track.tags.map(mapDBTag),
+      album: track.track.album ?? '',
+      label: track.track.label ?? '',
+      key: track.track.key ?? '',
+      dateAdded: track.track.dateAdded,
+      rating: track.track.rating ?? 0,
+      comment: track.track.comment ?? '',
+      bitrate: track.track.bitrate
+    }
+  };
+}
+
+// Helper function to map Prisma Playlist to Playlist
+export function mapPlaylist(playlist): Playlist {
+  return {
+    id: playlist.id,
+    name: playlist.name,
+    description: playlist.description ?? '',
+    filterDataId: playlist.filterDataId,
+    filterData: mapAdvancedFilterData(playlist.filterData),
+    tracks: playlist.tracks.map(mapPlaylistTrack)
+  };
 }

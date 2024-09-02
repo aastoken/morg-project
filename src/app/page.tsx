@@ -27,10 +27,10 @@ export default function Home() {
   }, []);
 
   return (
-    <>
+    <div className='flex w-full h-full'>
       <SidePanel setPlaylistFilter = {setPlaylistFilter}/>
       
-      <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex flex-col flex-shrink h-full overflow-hidden">
    
         <div className="flex-none w-full h-[45%] bg-zinc-300 border-l-2 border-amber-300">
           <TrackDetailsWindow selectedTrack = {selectedTrack}/>
@@ -41,6 +41,6 @@ export default function Home() {
         </div>
         
       </div>     
-    </> 
+    </div> 
   );
 }

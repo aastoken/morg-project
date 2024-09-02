@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../../button";
 import { trackKeys } from '../../../lib/models/Track';
 import FilterRow, { AddCondition } from "./filterRow";
@@ -8,18 +8,17 @@ import {buildAdvancedQuery} from "../../../lib/scripts/toolbox"
 let idCounter = 0;
   const generateId = () => {
     const returnedId = idCounter;
-    console.log("Current counter:",idCounter);
+    //console.log("Current counter:",idCounter);
     idCounter++;
     return returnedId;
   }
 
-const stringOptions = ['equals','contains','not equals','not contains']
-const numberOptions = ['=','<','>','<=','>=','range']
-const tagGenreOptions = ['contains all','contains some','not contains']
+const stringOptions = ['contains','not contains','equals','not equals']//TO DO: Quitar duplicado
 
 
 
   export default function ModalFilter({
+    type,
     setAdvancedFilter,
     filterRowsData,
     setFilterRowsData,
@@ -27,6 +26,20 @@ const tagGenreOptions = ['contains all','contains some','not contains']
     setAllConditions,
     close
   }) {
+
+    const [headerText, setHeaderText] = useState("");
+    const [confirmationButtonText, setConfirmationButtonText] = useState("");
+
+    useEffect(() => {
+      if (type === "filter") {
+        setHeaderText("ADVANCED FILTER OPTIONS");
+        setConfirmationButtonText("Apply Filter");
+      } else if (type === "rules") {
+        setHeaderText("AUTOMATIC PLAYLIST RULES");
+        setConfirmationButtonText("Apply Rules");
+      }
+    }, [type]);
+
     const handleConditionalChange = (event) => {
       const { value } = event.target;
       setAllConditions(value === "AND");
@@ -80,7 +93,7 @@ const tagGenreOptions = ['contains all','contains some','not contains']
         onSubmit={handleSubmit}
       >
         <div className="flex h-10 w-full bg-slate-300 items-center justify-between">
-          <div className="text-xl p-2">ADVANCED FILTER OPTIONS</div>
+          <div className="text-xl p-2">{headerText}</div>
           <div className="flex items-center h-full gap-2 pl-2 bg-amber-300">
             FULFILL
             <select
@@ -105,7 +118,7 @@ const tagGenreOptions = ['contains all','contains some','not contains']
           ))}
           <AddCondition onClick={addFilterRow} />
         </span>
-        <Button type="submit">Apply Filter</Button>
+        <Button type="submit">{confirmationButtonText}</Button>
       </form>
     );
   }

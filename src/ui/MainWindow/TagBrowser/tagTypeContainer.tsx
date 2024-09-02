@@ -4,7 +4,7 @@ import { DBTag, Tag } from '../../../lib/models';
 import { hexToRgba } from '../../../lib/scripts/toolbox';
 
 
-export default function TagTypeContainer({tag_type,isOpenByDefault, onTagClick}:{tag_type:DBTagType, isOpenByDefault:boolean, onTagClick: (tag: DBTag) => void}){
+export default function TagTypeContainer({tag_type,isOpenByDefault, onTagClick, allowEdit}:{tag_type:DBTagType, isOpenByDefault:boolean, onTagClick: (tag: DBTag) => void, allowEdit: boolean}){
 
   const [isOpen, setIsOpen] = useState(isOpenByDefault);
   useEffect(()=>{

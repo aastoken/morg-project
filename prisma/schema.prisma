@@ -35,6 +35,8 @@ model genre{
   name      String  @unique
   color     String  @default("#ffffff")
   tracks    track[]
+
+  filter_row filter_row[] @relation("FilterRowGenres")
 }
 
 model tag{
@@ -43,6 +45,8 @@ model tag{
   typeId  Int
   tracks  track[]
   type    tag_type  @relation(fields: [typeId], references: [id])
+
+  filter_row filter_row[] @relation("FilterRowTags")
 }
 
 model tag_type{
@@ -53,12 +57,14 @@ model tag_type{
 }
 
 model playlist {
-  id          Int            @id @default(autoincrement())
-  name        String
-  description String?
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-  tracks      playlist_track[] 
+  id                Int            @id @default(autoincrement())
+  name              String
+  description       String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  tracks            playlist_track[] 
+  filterData        filter_data? @relation(fields: [filterId], references: [id])
+  filterId          Int? 
 }
 
 model playlist_track {
@@ -70,4 +76,26 @@ model playlist_track {
   order      Int     
 
   @@unique([playlistId, order]) // Ensure that the order is unique within a playlist
+}
+
+model filter_row {
+  id               Int       @id @default(autoincrement())
+  selectedKey      String
+  selectedComparator String
+  inputValue       String?
+  inputValueMin    String?
+  inputValueMax    String?
+  filterData       filter_data @relation(fields: [filterId], references: [id], onDelete: Cascade)
+  filterId         Int @map("filterId")
+  selectedTags     tag[]    @relation("FilterRowTags")
+  selectedGenres   genre[]  @relation("FilterRowGenres")
+}
+
+model filter_data {
+  id               Int           @id @default(autoincrement())
+  allConditions    Boolean
+  filterRows       filter_row[]
+
+  playlist playlist[]
+	@@map("filter_data")
 }
