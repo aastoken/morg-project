@@ -24,6 +24,11 @@ export default function Explorer({playlistFilter, onTrackSelect}:{playlistFilter
           include:{
             type:true
           }
+        },
+        playlistTracks: {
+          include: {
+            track: true
+          }
         }      
       },
       where: {

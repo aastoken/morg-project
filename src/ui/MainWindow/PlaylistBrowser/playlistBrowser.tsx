@@ -8,9 +8,18 @@ import { getPlaylistsByName } from "../../../lib/actions";
 import Popup from "reactjs-popup";
 import PlaylistSettingsMenu from "./playlistSettingsMenu";
 
+
+
 export default function PlaylistBrowser({setPlaylistFilter}){
   const popupId = useId();
   
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // This will run only on the client
+    setIsClient(true);
+  }, []);
+
   const emptyPlaylist:Playlist = {
     id:-1,
     name:'',
@@ -55,7 +64,7 @@ export default function PlaylistBrowser({setPlaylistFilter}){
     <>
       <div className="flex flex-row items-center justify-between ml-1 mr-2">
         <input className="flex w-2/3 mb-2 mt-1 h-8 px-2 bg-slate-300" onChange={(e) => handleSearch(e.target.value)} placeholder="Search Playlist Name"/>
-        <Popup
+        {isClient && (<Popup
           trigger={
             <button aria-describedby={popupId} className="flex mb-2 mt-1 rounded-sm items-center justify-center w-1/4 h-8 bg-amber-300" >CREATE</button>
           }
@@ -71,7 +80,7 @@ export default function PlaylistBrowser({setPlaylistFilter}){
             <PlaylistSettingsMenu mode={"create"} playlist={emptyPlaylist} close = {close}/>
           )}
           
-        </Popup>
+        </Popup>)}
         
       </div>
       <div className="overflow-y-auto min-h-0 max-h-[calc(100%-38px)] flex flex-col items-start gap-2 pr-2 ml-1">

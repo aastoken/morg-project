@@ -2,7 +2,7 @@
 
 import { type } from "os";
 import { useState, useEffect, useId } from "react";
-import { Playlist } from "../../../lib/models";
+import { FilterData, Playlist } from "../../../lib/models";
 import { Button } from "../../button";
 import ModalFilter from "../Filter/modalFilter";
 import { FunnelIcon } from "@heroicons/react/24/outline";
@@ -13,9 +13,21 @@ export default function PlaylistSettingsMenu ({mode, playlist, close}:{mode:stri
   const popupId = useId();
   const [headerText, setHeaderText] = useState("");
   const [confirmationButtonText, setConfirmationButtonText] = useState("");
-  const [playlistData, setPlaylistData] = useState<Playlist>(playlist)
-  const [playlistAdvancedFilter, setPlaylistAdvancedFilter] = useState({})
+  const [playlistData, setPlaylistData] = useState<Playlist>({
+    ...playlist,
+    filterData: playlist.filterData || {
+      id: -1,
+      allConditions: true,
+      filterRows: []
+    },
+    tracks: playlist.tracks || [] // Initialize defaults if undefined, or maybe delete all this later
+  });
 
+  const [filterData, setFilterData] = useState<FilterData>({
+    id:-1,
+    allConditions: true,
+    filterRows: []
+  });
     useEffect(() => {
       if (mode === "create") {
         setHeaderText("CREATE PLAYLIST");
@@ -24,13 +36,24 @@ export default function PlaylistSettingsMenu ({mode, playlist, close}:{mode:stri
         setHeaderText("EDIT PLAYLIST");
         setConfirmationButtonText("Apply Changes");
       }
-    }, [type]);
+    }, [mode]);
 
     
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = event.target;
-      //setPlaylistData({ [name]: value });
+      setPlaylistData({
+        ...playlistData,
+        [name]: value
+      });
     };
+
+    const handleApplyFilter = (appliedFilterData: FilterData) => {
+      setPlaylistData(prevData => ({
+        ...prevData,
+        filterData: appliedFilterData
+      }));
+    };
+
     const handleSubmit = (event) => {
       event.preventDefault();
       //Logic to create/update playlist goes here
@@ -51,22 +74,22 @@ export default function PlaylistSettingsMenu ({mode, playlist, close}:{mode:stri
       <div className="flex flex-col items-start justify-start text-white pl-1">
         Name
         <input
-            className="w-5/12 h-full pl-1"
-            name="playlistName"
+            className="w-5/12 h-full pl-1 text-black"
+            name="name"
             type="text"
             placeholder="Playlist Name..."
-            value={''}
+            value={playlistData.name}
             onChange={handleInputChange}>
         </input>
       </div>
       <div className="flex flex-col items-start h-16 justify-start text-white pl-1">
         Description
         <input
-            className="w-11/12 h-full pl-1"
-            name="playlistName"
+            className="w-11/12 h-full pl-1 text-black"
+            name="description"
             type="text"
             placeholder="Description..."
-            value={''}
+            value={playlistData.description}
             onChange={handleInputChange}>
         </input>
       </div>
@@ -79,23 +102,21 @@ export default function PlaylistSettingsMenu ({mode, playlist, close}:{mode:stri
           </button>
         }
         aria-describedby={popupId}
+        position={['right center']}
         modal
         nested
-      >
-        {(close: any) => (
-          
-          <ModalFilter
-            type={'rules'}
-            setAdvancedFilter={setPlaylistAdvancedFilter}
-            filterRowsData={playlist.filterData.filterRows}
-            setFilterRowsData={setPlaylistData}
-            allConditions={playlist.filterData.allConditions}
-            setAllConditions={setPlaylistData}
-            close={close}
-          />
-          
-        )}
-      </Popup>
+        >
+          {(close: any) => (
+            
+            <ModalFilter
+              type={'rules'}
+              filterData={filterData}
+              setFilterData={setFilterData}
+              onApplyFilter={handleApplyFilter}
+              close={close}
+            />         
+          )}
+        </Popup>
       </span>
       <Button type="submit">{confirmationButtonText}</Button>
     </form>

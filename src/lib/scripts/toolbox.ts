@@ -9,15 +9,18 @@ export const hexToRgba = (hex, alpha) => {
 
 const comparators = {
   // Existing comparators
-  equals: (key, value) => ({ [key]: value }),
-  notEquals: (key, value) => ({ [key]: { not: value } }),
-  lessThan: (key, value) => ({ [key]: { lt: value } }),
-  greaterThan: (key, value) => ({ [key]: { gt: value } }),
-  lessOrEquals: (key, value) => ({ [key]: { lte: value } }),
-  greaterOrEquals: (key, value) => ({ [key]: { gte: value } }),
-  inRange: (key, min, max) => ({ [key]: { gte: min, lte: max } }),
+  equals: (key, value) => ({ [key]: Number(value) }),
+  notEquals: (key, value) => ({ [key]: { not: Number(value) } }),
+  lessThan: (key, value) => ({ [key]: { lt: Number(value) } }),
+  greaterThan: (key, value) => ({ [key]: { gt: Number(value) } }),
+  lessOrEquals: (key, value) => ({ [key]: { lte: Number(value) } }),
+  greaterOrEquals: (key, value) => ({ [key]: { gte: Number(value) } }),
+  inRange: (key, min, max) => ({ [key]: { gte: Number(min), lte: (max) } }),
+
   contains: (key, value) => ({ [key]: { contains: value } }),
   notContains: (key, value) => ({ [key]: { not: { contains: value } } }),
+  equalsString: (key, value) => ({ [key]: value }),
+  notEqualsString: (key, value) => ({ [key]: { not: value } }),
 
   // Array comparators for tags and genres
   containsAll: (key, values) => {
@@ -79,6 +82,32 @@ const dBLabels = {
   'Bitrate':"bitrate"
   };
 
+const comparatorTranslation = {
+  '=':'equals',
+  '<':'lessThan',
+  '>':'greaterThan',
+  '<=':'lessOrEquals',
+  '>=':'greaterOrEquals',
+  'range':'inRange',
+  'equals':'equals',
+  'not equals':'notEquals',
+  'contains':'contains',
+  'not contains':'notContains',
+  'contains some':'containsSome',
+  'contains all': 'containsAll'
+};
+const dateComparatorTranslation = {
+  'equals':'dateEquals',
+  'notEquals':'dateNotEquals',
+  'lessThan':'dateBefore',
+  'greaterThan':'dateAfter',
+  'lessOrEquals':'dateBeforeOrEquals',
+  'greaterOrEquals':'dateAfterOrEquals',
+  'inRange':'dateInRange'
+};
+
+const stringFields = ['filename','folder','name','artist','album','label','key','rating','comment']
+
 function buildRowQuery(
   {
   selectedKey,
@@ -92,54 +121,97 @@ function buildRowQuery(
 ) {
   let conditionQuery = {}
   selectedKey = dBLabels[selectedKey] //We translate the Label string to the db attribute name
+  selectedComparator = comparatorTranslation[selectedComparator]
   console.log("Key:",selectedKey,"Comparator:",selectedComparator)
-  console.log("InputValue",inputValue,inputValueMin,inputValueMax,"Genres",selectedGenres,"Tags",selectedTags)
+  console.log("Input Values",inputValue,inputValueMin,inputValueMax,"Genres",selectedGenres,"Tags",selectedTags)
   // Handle the basic key-comparator-value conditions
   if (selectedComparator && comparators[selectedComparator]) {
-    if (selectedComparator === 'inRange' || selectedComparator === 'dateInRange') {
-      conditionQuery = {
-        ...comparators[selectedComparator](selectedKey, inputValueMin, inputValueMax)
-      };
-    } else {
-      conditionQuery = {
+    if(selectedKey === 'dateAdded'){
+
+      selectedComparator = dateComparatorTranslation[selectedComparator]
+      if(selectedComparator === 'dateInRange'){
+        conditionQuery = {
+          ...comparators[selectedComparator](selectedKey, inputValueMin, inputValueMax)
+        };
+      }
+      else{
+        conditionQuery = {
         ...comparators[selectedComparator](selectedKey, inputValue)
-      };
+        };
+      } 
     }
+    else if (stringFields.includes(selectedKey)){
+
+      if(selectedComparator === 'equals'){
+        conditionQuery = {
+        ...comparators.equalsString(selectedKey,inputValue)
+        }
+      }
+      else if(selectedComparator === 'notEquals'){
+        conditionQuery = {
+        ...comparators.notEqualsString(selectedKey,inputValue)
+        }
+      }
+      else{
+        conditionQuery = {
+          ...comparators[selectedComparator](selectedKey, inputValue)
+        };
+      }
+    }
+    else if(selectedKey === 'genres'){
+          // Handle genre-based filtering
+      if (selectedGenres && selectedGenres.length > 0) {
+        if (selectedComparator === 'containsAll') {
+          conditionQuery = {
+            ...comparators.containsAll('genres', selectedGenres)
+          };
+        } else if (selectedComparator === 'containsSome') {
+          conditionQuery = {
+            ...comparators.containsSome('genres', selectedGenres)
+          };
+        } else if (selectedComparator === 'notContains') {
+          conditionQuery = {
+            ...comparators.notContainsArray('genres', selectedGenres)
+          };
+        }
+      }
+    }
+    else if(selectedKey === 'tags'){
+          // Handle tag-based filtering
+      if (selectedTags && selectedTags.length > 0) {
+        if (selectedComparator === 'containsAll') {
+          conditionQuery = {
+            ...comparators.containsAll('tags', selectedTags)
+          };
+        } else if (selectedComparator === 'containSome') {
+          conditionQuery = {
+            ...comparators.containsSome('tags', selectedTags)
+          };
+        } else if (selectedComparator === 'notContains') {
+          conditionQuery = {
+            ...comparators.notContainsArray('tags', selectedTags)
+          };
+        }
+      }
+    }
+    else{
+
+      if (selectedComparator === 'inRange') {
+        conditionQuery = {
+          ...comparators[selectedComparator](selectedKey, inputValueMin, inputValueMax)
+        };
+      } else {
+        conditionQuery = {
+          ...comparators[selectedComparator](selectedKey, inputValue)
+        };
+      }
+    }
+    
   }
 
-  // Handle tag-based filtering
-  if (selectedTags && selectedTags.length > 0) {
-    if (selectedComparator === 'contains all') {
-      conditionQuery = {
-        ...comparators.containsAll('tags', selectedTags)
-      };
-    } else if (selectedComparator === 'contains some') {
-      conditionQuery = {
-        ...comparators.containsSome('tags', selectedTags)
-      };
-    } else if (selectedComparator === 'not contains') {
-      conditionQuery = {
-        ...comparators.notContainsArray('tags', selectedTags)
-      };
-    }
-  }
+  
 
-  // Handle genre-based filtering
-  if (selectedGenres && selectedGenres.length > 0) {
-    if (selectedComparator === 'contains all') {
-      conditionQuery = {
-        ...comparators.containsAll('genres', selectedGenres)
-      };
-    } else if (selectedComparator === 'contains some') {
-      conditionQuery = {
-        ...comparators.containsSome('genres', selectedGenres)
-      };
-    } else if (selectedComparator === 'not contains') {
-      conditionQuery = {
-        ...comparators.notContainsArray('genres', selectedGenres)
-      };
-    }
-  }
+  
   console.log("Returning row query:",conditionQuery)
   return conditionQuery;
 }

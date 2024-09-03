@@ -5,7 +5,7 @@ import { Track, trackKeys } from '../../../lib/models/Track';
 import Popup from "reactjs-popup";
 import GenreBrowser from "../GenreBrowser/genreBrowser";
 import TagBrowser from "../TagBrowser/tagBrowser";
-import { DBGenre, DBTag, DBTagType, Genre, Tag, TagType } from "../../../lib/models";
+import { DBGenre, DBTag, DBTagType, FilterRow, Genre, Tag, TagType } from "../../../lib/models";
 import TagTypesVisualizer from "../TagBrowser/tagTypesVisualizer";
 import GenresVisualizer from "../GenreBrowser/genresVisualizer";
 
@@ -46,7 +46,7 @@ function getTagTypesFromTagArray(tags: DBTag[]): DBTagType[]{
 }
 
 
-export default function FilterRow({ rowData, deleteRow, updateRow }: { rowData: any, deleteRow: () => void, updateRow: (data: any) => void }) {
+export default function FilterRowComponent({ rowData, deleteRow, updateRow }: { rowData: FilterRow; deleteRow: () => void; updateRow: (updatedData: Partial<FilterRow>) => void; }) {
 
   const handleTagSelect = (selectedTag: DBTag) => {
     updateRow({
