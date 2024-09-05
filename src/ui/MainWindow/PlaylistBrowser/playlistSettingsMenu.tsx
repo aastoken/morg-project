@@ -5,11 +5,24 @@ import { useState, useEffect, useId } from "react";
 import { FilterData, Playlist } from "../../../lib/models";
 import { Button } from "../../button";
 import ModalFilter from "../Filter/modalFilter";
-import { FunnelIcon } from "@heroicons/react/24/outline";
+import { FunnelIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Popup from "reactjs-popup";
+import { createEmptyPlaylist, updatePlaylistWithoutFilter, getFilteredDBTracks, createPlaylistWithFilter, updatePlaylistWithFilter, deletePlaylist } from "../../../lib/actions";
+import { buildTrackFilterQuery } from "../../../lib/scripts/toolbox";
+import { Prisma } from "@prisma/client";
 
 
-export default function PlaylistSettingsMenu ({mode, playlist, close}:{mode:string, playlist: Playlist, close: ()=> void}){
+export default function PlaylistSettingsMenu ({
+  mode, 
+  playlist, 
+  close, 
+  onPlaylistChange
+}:{
+  mode: string, 
+  playlist: Playlist,
+  close: ()=> void, 
+  onPlaylistChange: (playlist?:Playlist)=> void
+}){
   const popupId = useId();
   const [headerText, setHeaderText] = useState("");
   const [confirmationButtonText, setConfirmationButtonText] = useState("");
@@ -23,7 +36,7 @@ export default function PlaylistSettingsMenu ({mode, playlist, close}:{mode:stri
     tracks: playlist.tracks || [] // Initialize defaults if undefined, or maybe delete all this later
   });
 
-  const [filterData, setFilterData] = useState<FilterData>({
+  const [filterData, setFilterData] = useState<FilterData>(playlist.filterData ||{
     id:-1,
     allConditions: true,
     filterRows: []
@@ -39,7 +52,7 @@ export default function PlaylistSettingsMenu ({mode, playlist, close}:{mode:stri
     }, [mode]);
 
     
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       const { name, value } = event.target;
       setPlaylistData({
         ...playlistData,
@@ -54,70 +67,141 @@ export default function PlaylistSettingsMenu ({mode, playlist, close}:{mode:stri
       }));
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event: React.FormEvent) => {
       event.preventDefault();
-      //Logic to create/update playlist goes here
-      if (mode === "create") {
+      const includeQuery = {
         
-      } else if (mode === "edit") {
-
       }
+      //Logic to create/update playlist goes here
+      if (playlistData.filterData.filterRows.length === 0) {
+        if (mode === "create") {
+          await createEmptyPlaylist({
+            name: playlistData.name,
+            description: playlistData.description,
+          });
+        } else if (mode === "edit") {
+          await updatePlaylistWithoutFilter({
+            playlistId: playlist.id,
+            name: playlistData.name,
+            description: playlistData.description,
+          });
+        }
+      } else {
+        const filteredTracksQuery = buildTrackFilterQuery(
+          playlistData.filterData.filterRows,
+          playlistData.filterData.allConditions
+        );
+        const fullQuery: Prisma.trackFindManyArgs = {
+          include: {
+            genres: true,
+            tags: {
+              include:{
+                type:true
+              }
+            }      
+          },
+          where: filteredTracksQuery.where
+        }
+        const filteredTracks = await getFilteredDBTracks(fullQuery);
+    
+        if (mode === "create") {
+          await createPlaylistWithFilter({
+            name: playlistData.name,
+            description: playlistData.description,
+            filterData: playlistData.filterData,
+            tracks: filteredTracks,
+          });
+        } else if (mode === "edit") {
+          await updatePlaylistWithFilter({
+            playlistId: playlist.id,
+            name: playlistData.name,
+            description: playlistData.description,
+            filterData: playlistData.filterData,
+            tracks: filteredTracks,
+          });
+        }
+      }
+      
+      onPlaylistChange(playlist);
+      
+      
       close(); // Close modal after applying
     };
+
+    const handleDelete = async (event) =>{
+      const deletedPlaylist = await deletePlaylist(playlist.id);
+      console.log("Deleted Playlist: ",deletedPlaylist)
+      onPlaylistChange();
+      close();
+    };
+    const filterStatus = playlistData.filterData.filterRows.length > 0 ? "ON" : "OFF";
+
   return(
     <form 
-    className="flex flex-col w-[750px] h-[500px] bg-slate-600 border-4 border-white"
+    className="flex flex-col w-[300px] h-[400px] bg-slate-600 border-4 border-white"
     onSubmit={handleSubmit}>
       <div className="flex h-10 w-full bg-slate-300 items-center justify-between">
         <div className="text-xl p-2">{headerText}</div>
+        {mode === "edit"?
+          (<button 
+            type="button" 
+            className="flex items-center justify-center mr-1 w-8 h-8 bg-red-600 rounded-sm"
+            onClick={handleDelete}>
+              <TrashIcon className="w-6"/>
+            </button>)
+          :null}
       </div>
-      <div className="flex flex-col items-start justify-start text-white pl-1">
+      <div className="flex flex-col h-12 items-start justify-start text-white px-1">
         Name
-        <input
-            className="w-5/12 h-full pl-1 text-black"
+        <textarea
+            className="w-full h-full pl-1 text-black text-start align-top resize-none"
             name="name"
-            type="text"
             placeholder="Playlist Name..."
             value={playlistData.name}
-            onChange={handleInputChange}>
-        </input>
+            onChange={handleInputChange}
+        />
+        
       </div>
-      <div className="flex flex-col items-start h-16 justify-start text-white pl-1">
+      <div className="flex flex-col items-start w-full h-24 justify-start  text-white px-1">
         Description
-        <input
-            className="w-11/12 h-full pl-1 text-black"
-            name="description"
-            type="text"
-            placeholder="Description..."
-            value={playlistData.description}
-            onChange={handleInputChange}>
-        </input>
+        <textarea
+          className="w-full h-full pl-1 text-black align-top overflow-y-auto resize-none"
+          name="description"
+          placeholder="Description..."
+          value={playlistData.description}
+          onChange={handleInputChange}
+        />
       </div>
-      <span className="flex flex-grow pl-1 mt-16 gap-3 text-white">
-        Click to Add a custom Rule set to the playlist. Warning: This will turn the playlist into an Automatic Playlist.
+      <span className="flex flex-grow flex-col items-start align-middle px-1 mt-5"> 
+        <div className="flex">
+          <div className="text-white text-xl bg-slate-900 px-2 rounded-l-sm">
+          AUTOMATIC PLAYLIST
+        </div>
+        <div className={` text-xl px-2  rounded-r-sm  ${filterStatus === "ON" ? "bg-green-500" : "bg-red-500"}`}>
+        {filterStatus}
+        </div>
         <Popup
-        trigger={
-          <button aria-describedby={popupId} className="flex w-fit h-fit p-2 bg-white text-black">
-            <FunnelIcon className="flex w-[24px]" />
-          </button>
-        }
-        aria-describedby={popupId}
-        position={['right center']}
+        trigger ={<button className="rounded-sm items-center px-2 h-7 ml-2 bg-amber-300" type='button'><PencilSquareIcon className="w-6"/></button>}
         modal
-        nested
-        >
-          {(close: any) => (
-            
-            <ModalFilter
+        nested>
+          {(close:any)=>(
+          <ModalFilter
               type={'rules'}
               filterData={filterData}
               setFilterData={setFilterData}
               onApplyFilter={handleApplyFilter}
               close={close}
-            />         
-          )}
+            />)}
         </Popup>
+        </div>
+        <div className="text-white">
+          Applying one or more conditions will turn this playlist into an automatic playlist. 
+        </div>
+                           
       </span>
+      <div className="text-white">
+        Number of Tracks -  {playlistData.tracks.length}
+      </div> 
       <Button type="submit">{confirmationButtonText}</Button>
     </form>
   );

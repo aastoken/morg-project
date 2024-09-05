@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { FilterRow } from "../models";
 
 export const hexToRgba = (hex, alpha) => {
@@ -216,7 +217,7 @@ function buildRowQuery(
   return conditionQuery;
 }
 
-export function buildAdvancedQuery(filterRowsData : FilterRow[], allConditions: boolean){
+export function buildTrackFilterQuery(filterRowsData : FilterRow[], allConditions: boolean): Prisma.trackFindManyArgs{
   let explorerQuery = {}
   let conditionsQuery: object[] = []
 

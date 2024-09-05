@@ -3,10 +3,11 @@
 import { useEffect, useId, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import PlaylistContainer from "./playlistContainer";
-import { Playlist } from "../../../lib/models";
+import { FilterData, Playlist } from "../../../lib/models";
 import { getPlaylistsByName } from "../../../lib/actions";
 import Popup from "reactjs-popup";
 import PlaylistSettingsMenu from "./playlistSettingsMenu";
+import { Prisma } from "@prisma/client";
 
 
 
@@ -14,6 +15,7 @@ export default function PlaylistBrowser({setPlaylistFilter}){
   const popupId = useId();
   
   const [isClient, setIsClient] = useState(false);
+  const [selectedPlaylistId, setSelectedPlaylistId] = useState<number | null>(null); 
 
   useEffect(() => {
     // This will run only on the client
@@ -40,26 +42,55 @@ export default function PlaylistBrowser({setPlaylistFilter}){
     setPlaylistSearchQuery(term);
   }, 300);
 
+  const fetchPlaylists = async () => {
+    try {
+      const result = await getPlaylistsByName(playlistSearchQuery);
+      setData(result);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   useEffect(() => {
-    const getData = async () => {
-      try {       
-        
-        const result = await getPlaylistsByName(playlistSearchQuery);
-        console.log("Playlist Result:",result)
-        
-        setData(result);
-        
-        
-        
-        
-      } catch (error) {
-        console.error('Error fetching data:', error);
+    fetchPlaylists();
+  }, [playlistSearchQuery]);
+
+  function getPlaylistFilterQuery ( playlist: Playlist): Prisma.trackFindManyArgs{
+    const playlistFilter: Prisma.trackFindManyArgs = {
+      where: {
+        playlistTracks: {
+          some: {
+            playlistId: playlist.id
+          }
+        }
       }
     };
-
-    getData();
-  }, [playlistSearchQuery]);
+  return playlistFilter
+  }
   
+  const handlePlaylistChange = (playlist?: Playlist) => {
+    if(!playlist){
+      setPlaylistFilter({})
+      setSelectedPlaylistId(null);
+    }
+    else{
+      if(playlist.id != -1){
+        setPlaylistFilter(getPlaylistFilterQuery(playlist))
+        setSelectedPlaylistId(playlist.id);
+      }
+      
+    }
+    
+    fetchPlaylists();
+  };
+
+  
+  
+  const handlePlaylistSelect = (playlist: Playlist) =>{
+    setPlaylistFilter(getPlaylistFilterQuery(playlist));
+    setSelectedPlaylistId(playlist.id);
+  }
+ 
   return(
     <>
       <div className="flex flex-row items-center justify-between ml-1 mr-2">
@@ -72,12 +103,17 @@ export default function PlaylistBrowser({setPlaylistFilter}){
           modal
           nested
           contentStyle={{
+            flex:'true',
             marginLeft: '285px',
-            marginBottom: '4%'
+            alignSelf: "center"
           }}
         >
           {(close:any)=>(
-            <PlaylistSettingsMenu mode={"create"} playlist={emptyPlaylist} close = {close}/>
+            <PlaylistSettingsMenu 
+              mode={"create"} 
+              playlist={emptyPlaylist} 
+              close = {close}
+              onPlaylistChange = {handlePlaylistChange}/>
           )}
           
         </Popup>)}
@@ -85,13 +121,23 @@ export default function PlaylistBrowser({setPlaylistFilter}){
       </div>
       <div className="overflow-y-auto min-h-0 max-h-[calc(100%-38px)] flex flex-col items-start gap-2 pr-2 ml-1">
         <div
-          className="flex rounded-sm w-full h-7 p-2 items-center cursor-pointer bg-slate-100"
-          onClick={() => {setPlaylistFilter({})}}
+          className={`flex rounded-sm w-full h-7 p-2 items-center cursor-pointer ${
+            selectedPlaylistId === null ? 'bg-amber-200' : 'bg-slate-100'
+          }`}
+          onClick={() => {
+            setPlaylistFilter({}); 
+            setSelectedPlaylistId(null);
+          }}
         >
           Track Collection
         </div>
-        {data.map((playlist,index) => (<PlaylistContainer key={index} playlist={playlist}/>))}
-        
+        {data.map((playlist,index) => (<PlaylistContainer 
+        key={index} 
+        playlist={playlist} 
+        onSelect={handlePlaylistSelect} 
+        onPlaylistChange = {handlePlaylistChange} 
+        isSelected={selectedPlaylistId === playlist.id}/>))}
+
       </div>
     </>
   );

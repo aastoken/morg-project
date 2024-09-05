@@ -3,7 +3,7 @@ import { Button } from "../../button";
 import { trackKeys } from '../../../lib/models/Track';
 import FilterRowComponent, { AddCondition } from "./filterRow";
 import { FilterData, FilterRow, Genre, Tag } from "../../../lib/models";
-import {buildAdvancedQuery} from "../../../lib/scripts/toolbox"
+import {buildTrackFilterQuery} from "../../../lib/scripts/toolbox"
 
 let idCounter = 0;
   const generateId = () => {
@@ -84,6 +84,7 @@ const stringOptions = ['contains','not contains','equals','not equals']//TO DO: 
   
     const handleSubmit = (event: React.FormEvent) => {
       event.preventDefault();
+      event.stopPropagation();
       console.log("Filter data:", filterData.filterRows);
       console.log("ALL Conditions:", filterData.allConditions);
       onApplyFilter(filterData);

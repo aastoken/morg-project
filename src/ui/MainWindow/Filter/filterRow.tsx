@@ -187,7 +187,7 @@ export default function FilterRowComponent({ rowData, deleteRow, updateRow }: { 
   }
 
   return(
-    <div className="flex items-center justify-between w-full h-16 bg-slate-300 px-2 py-1"> 
+    <div className="flex items-center justify-between w-full min-h-16 h-16 bg-slate-300 px-2 py-1"> 
     
       <select 
       name = "trackKey"

@@ -209,6 +209,34 @@ export async function getFilteredTracks(query: Prisma.trackFindManyArgs): Promis
   }));
 }
 
+export async function getFilteredDBTracks(query: Prisma.trackFindManyArgs): Promise<DBTrack[]>{
+  const tracks = await prisma.track.findMany(query);
+  
+  return tracks.map((track)=>({
+    id:         track.id,
+    filename:   track.filename,
+    folder:     track.folder,
+    name:       track.name ?? undefined,
+    artist:     track.artist ?? undefined,
+    length:     millisToMinutes(track.length),
+    bpm:        track.bpm ?? undefined,
+    genres:     track.genres.map(g => ({
+                  name: g.name
+                })),
+    tags:       track.tags.map(t => ({
+                  name: t.name,
+                  typeName: t.type.name
+                })),
+    album:      track.album ?? undefined,
+    label:      track.label ?? undefined,
+    key:        track.key ?? undefined,
+    dateAdded:  formatDateTime(track.dateAdded?.toISOString()) ?? undefined,
+    rating:     track.rating ?? undefined,
+    comment:    track.comment ?? undefined, 
+    bitrate:    track.bitrate
+  }));
+}
+
 export async function deleteAllTracks(){
   const deletedTracks = await prisma.track.deleteMany({});
   return deletedTracks;

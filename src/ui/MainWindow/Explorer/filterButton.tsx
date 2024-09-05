@@ -3,7 +3,7 @@ import Popup from 'reactjs-popup';
 import ModalFilter from '../Filter/modalFilter';
 import { ReactNode, useEffect, useId, useState } from 'react';
 import { FilterData } from '../../../lib/models';
-import { buildAdvancedQuery } from '../../../lib/scripts/toolbox';
+import { buildTrackFilterQuery } from '../../../lib/scripts/toolbox';
 
 export default function FilterButton({ setAdvancedFilter }) {
   const [filterData, setFilterData] = useState<FilterData>({
@@ -21,7 +21,7 @@ export default function FilterButton({ setAdvancedFilter }) {
 
   const handleApplyFilter = (appliedFilterData: FilterData) => {
     setFilterData(appliedFilterData);
-    const explorerQuery = buildAdvancedQuery(appliedFilterData.filterRows, appliedFilterData.allConditions);
+    const explorerQuery = buildTrackFilterQuery(appliedFilterData.filterRows, appliedFilterData.allConditions);
     console.log("AdvancedFilter:", explorerQuery);
     setAdvancedFilter(explorerQuery);
   };
