@@ -21,7 +21,7 @@ export default function PlaylistContainer({
 }){
   const popupId = useId();
   return(
-    <div className={`flex flex-row w-full h-8 justify-between ${
+    <div className={`flex flex-row transition-all duration-200 ease-in-out w-full h-8 justify-between ${
       isSelected ? 'bg-amber-200' : 'bg-slate-100'
     }`}>
       <div

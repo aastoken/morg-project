@@ -62,7 +62,7 @@ export default function PanelTagBrowser(){
           <div className="flex w-96 h-[415px] bg-red-500"></div>
         </Popup>
     </div>
-      <div className="overflow-y-auto min-h-0 max-h-[calc(100%-38px)] flex flex-col items-start gap-2 pr-2 ml-1">
+      <div className="overflow-y-auto min-h-0 max-h-[calc(100%-68px)] flex flex-col items-start gap-2 pr-2 ml-1 py-1">
         
         {data.map((tag_type,index) => (<TagTypeContainer key={index} tag_type={tag_type} isOpenByDefault={open} onTagClick={()=>{}} allowEdit = {true}/>))}
         
