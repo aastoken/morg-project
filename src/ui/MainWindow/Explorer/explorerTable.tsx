@@ -4,10 +4,13 @@ import { useColumns } from "../../../lib/hooks";
 import { Column } from "../../../lib/models/Column";
 import { Track } from "../../../lib/models";
 import { useEffect, useState } from "react";
-import { getAllTracks, getFilteredTracks } from "../../../lib/actions";
+import { getAllTracks, getFilteredDBTracks, getFilteredTracks } from "../../../lib/actions";
 import { initcolumns } from "../../../lib/models/columns";
 import "react-resizable/css/styles.css";
 import { Cabin } from "next/font/google";
+import GenresVisualizer from "../GenreBrowser/genresVisualizer";
+import TagTypesVisualizer from "../TagBrowser/tagTypesVisualizer";
+import { getTagTypesFromTagArray } from "../../../lib/scripts/toolbox";
 
 const cabin = Cabin({ subsets: ["latin"] });
 
@@ -25,7 +28,7 @@ export default function ExplorerTable({explorerQuery, onTrackSelect}:{explorerQu
   } = useColumns(initcols, 250);
   const getData = async () => {
       try {
-        const result = await getFilteredTracks(explorerQuery); //await getAllTracks();
+        const result = await getFilteredDBTracks(explorerQuery); //await getAllTracks();
         //console.log("Result:",result)
         
         setData(result);
@@ -42,6 +45,16 @@ export default function ExplorerTable({explorerQuery, onTrackSelect}:{explorerQu
   }, [explorerQuery]);
 
   let rows = data;
+
+  const renderCellValue = (columnName: string, cellValue: any) => {
+    if (columnName === 'tags') {
+      return <TagTypesVisualizer tag_types={getTagTypesFromTagArray(cellValue)} onTagSelect={()=>{}} />;
+    } else if (columnName === 'genres') {
+      return <GenresVisualizer genres={cellValue} onGenreSelect={()=>{}} />;
+    } else {
+      return typeof cellValue === 'object' ? JSON.stringify(cellValue) : cellValue;
+    }
+  };
 
   const handleRowClick = (track: Track) => {
     onTrackSelect(track);
@@ -78,11 +91,11 @@ export default function ExplorerTable({explorerQuery, onTrackSelect}:{explorerQu
                 return(
                   <td
                   key={colIndex}
-                  className='border-spacing-x-0.5 h-14 p-2 overflow-hidden '
+                  className='border-spacing-x-0.5 h-16 p-2 overflow-hidden '
                   
                 >
                     <div className='flex h-full overflow-y-auto overflow-x-hidden items-center '>
-                      {typeof cellValue === 'object' ? JSON.stringify(cellValue) : cellValue}
+                      {renderCellValue(column.name, cellValue)}
                     </div>
                   </td>
                   );

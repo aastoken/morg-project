@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { FilterRow } from "../models";
+import { DBTag, DBTagType, FilterRow } from "../models";
 
 export const hexToRgba = (hex, alpha) => {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -245,4 +245,18 @@ export function buildTrackFilterQuery(filterRowsData : FilterRow[], allCondition
   
   console.log("Returning Advanced Query:",explorerQuery)
   return explorerQuery
+}
+
+export function getTagTypesFromTagArray(tags: DBTag[]): DBTagType[]{
+  const tagTypeMap: Map<string, DBTagType> = new Map();
+
+  tags.forEach(tag => {
+    if (!tagTypeMap.has(tag.typeName)) {
+      tagTypeMap.set(tag.typeName, {id:tag.typeId, name: tag.typeName, color: tag.color, tags: [] });
+    }
+
+    tagTypeMap.get(tag.typeName)!.tags.push(tag);
+  });
+
+  return Array.from(tagTypeMap.values());
 }

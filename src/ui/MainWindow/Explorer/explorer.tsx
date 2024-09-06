@@ -22,7 +22,7 @@ export default function Explorer({playlistFilter, onTrackSelect}:{playlistFilter
         genres: true,
         tags: {
           include:{
-            type:true
+            type: true
           }
         },
         playlistTracks: {

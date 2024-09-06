@@ -221,11 +221,16 @@ export async function getFilteredDBTracks(query: Prisma.trackFindManyArgs): Prom
     length:     millisToMinutes(track.length),
     bpm:        track.bpm ?? undefined,
     genres:     track.genres.map(g => ({
-                  name: g.name
+                  id: g.id,
+                  name: g.name,
+                  color: g.color
                 })),
     tags:       track.tags.map(t => ({
+                  id: t.id,
                   name: t.name,
-                  typeName: t.type.name
+                  typeName: t.type.name,
+                  color: t.type.color,
+                  typeId: t.type.id
                 })),
     album:      track.album ?? undefined,
     label:      track.label ?? undefined,

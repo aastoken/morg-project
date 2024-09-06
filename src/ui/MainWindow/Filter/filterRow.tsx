@@ -8,6 +8,7 @@ import TagBrowser from "../TagBrowser/tagBrowser";
 import { DBGenre, DBTag, DBTagType, FilterRow, Genre, Tag, TagType } from "../../../lib/models";
 import TagTypesVisualizer from "../TagBrowser/tagTypesVisualizer";
 import GenresVisualizer from "../GenreBrowser/genresVisualizer";
+import { getTagTypesFromTagArray } from "../../../lib/scripts/toolbox";
 
 const stringOptions = ['contains','not contains','equals','not equals']
 const numberOptions = ['<','>','=','<=','>=','range']
@@ -31,19 +32,6 @@ const dynamicOptions = {
   'Bitrate':numberOptions
   };
 
-function getTagTypesFromTagArray(tags: DBTag[]): DBTagType[]{
-  const tagTypeMap: Map<string, DBTagType> = new Map();
-
-  tags.forEach(tag => {
-    if (!tagTypeMap.has(tag.typeName)) {
-      tagTypeMap.set(tag.typeName, {id:tag.typeId, name: tag.typeName, color: tag.color, tags: [] });
-    }
-
-    tagTypeMap.get(tag.typeName)!.tags.push(tag);
-  });
-
-  return Array.from(tagTypeMap.values());
-}
 
 
 export default function FilterRowComponent({ rowData, deleteRow, updateRow }: { rowData: FilterRow; deleteRow: () => void; updateRow: (updatedData: Partial<FilterRow>) => void; }) {

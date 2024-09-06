@@ -6,7 +6,7 @@ export default function TagTypesVisualizer({tag_types, onTagSelect}:{tag_types: 
 
 
   return(
-    <div className='flex flex-col justify-start py-1 gap-1 w-full max-w-full h-full'>
+    <div className='flex flex-col justify-start py-1 gap-1 w-full max-w-full h-full text-black'>
     {tag_types.map((tag_type, index) => (
       <TagTypeDetail key={index} tag_type={tag_type} onTagClick={onTagSelect}/>
     ))}
