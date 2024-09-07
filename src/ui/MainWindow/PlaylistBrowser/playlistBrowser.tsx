@@ -119,7 +119,7 @@ export default function PlaylistBrowser({setPlaylistFilter}){
         </Popup>)}
         
       </div>
-      <div className="overflow-y-auto min-h-0 max-h-[calc(100%-38px)] flex flex-col items-start gap-2 pr-2 ml-1">
+      <div className="overflow-y-auto min-h-0 max-h-[calc(100%-38px)] flex flex-col items-start gap-2 pr-2 pb-1 ml-1">
         <div
           className={`flex transition-all duration-200 ease-in-out rounded-sm w-full h-7 p-2 items-center cursor-pointer ${
             selectedPlaylistId === null ? 'bg-amber-200' : 'bg-slate-100'

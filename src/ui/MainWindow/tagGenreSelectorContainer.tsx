@@ -34,14 +34,14 @@ const renderComponent = (tab: string) => {
         <div className='flex flex-row justify-around'>
           <button 
           type='button' 
-          className={`border-r-2 border-white transition-all duration-200 ease-in-out rounded-t-md ${selectedTab ==="tags" ? 'w-4/6 bg-slate-200 text-black':'w-2/6 bg-slate-800 text-white'}`}
+          className={`border-r-2 border-white transition-all duration-200 ease-in-out rounded-t-md ${selectedTab ==="tags" ?'w-4/6 bg-slate-800 text-white':'w-2/6 bg-slate-200 text-black'}`}
           onClick={()=>handleTabClick("tags")}
           >
             Tags
           </button>
           <button 
           type='button' 
-          className={`rounded-t-md transition-all duration-200 ease-in-out ${selectedTab ==="genres" ? 'w-4/6 bg-slate-200 text-black':'w-2/6 bg-slate-800 text-white'}`}
+          className={`rounded-t-md transition-all duration-200 ease-in-out ${selectedTab ==="genres" ? 'w-4/6 bg-slate-800 text-white':'w-2/6 bg-slate-200 text-black'}`}
           onClick={()=>handleTabClick("genres")}
           >
             Genres
