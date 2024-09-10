@@ -49,7 +49,7 @@ export default function PanelTagBrowser(){
         <input className="flex w-2/3 h-full px-2 bg-slate-300" onChange={(e) => handleSearch(e.target.value)} placeholder="Search Tag Name"/>
         <Popup
             trigger={
-              <button aria-describedby={popupId} className="flex h-full rounded-sm items-center justify-center w-1/4 bg-amber-300" >ADD TAG</button>
+              <button aria-describedby={popupId} className="flex h-full ml-2 rounded-sm items-center justify-center w-1/3 bg-amber-300" >ADD TYPE</button>
             }
             aria-describedby={popupId}
             modal
