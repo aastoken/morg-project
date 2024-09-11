@@ -16,7 +16,7 @@ export default function SidePanel({setPlaylistFilter}){
       <div className='flex-grow w-full overflow-hidden h-full flex-col'>
         <TagGenreSelectorContainer/>
       </div>
-      <div className="flex h-[55%] min-h-[55%] w-full flex-col bg-slate-800">
+      <div className="flex h-[55%] min-h-[55%] w-full flex-col bg-slate-800 border-t-2 border-amber-300">
         <PlaylistBrowser setPlaylistFilter={setPlaylistFilter}/>
         
       </div>

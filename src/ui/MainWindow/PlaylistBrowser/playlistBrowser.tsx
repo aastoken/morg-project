@@ -93,7 +93,7 @@ export default function PlaylistBrowser({setPlaylistFilter}){
  
   return(
     <>
-      <div className="flex flex-row items-center justify-between ml-1 mr-2">
+      <div className="flex flex-row items-center justify-between ml-1 mr-2 mt-1">
         <input className="flex w-2/3 mb-2 mt-1 h-8 px-2 bg-slate-300" onChange={(e) => handleSearch(e.target.value)} placeholder="Search Playlist Name"/>
         {isClient && (<Popup
           trigger={

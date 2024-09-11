@@ -3,13 +3,14 @@
 import { type } from "os";
 import { useState, useEffect, useId } from "react";
 import { FilterData, Playlist } from "../../../lib/models";
-import { Button } from "../../button";
+import { Button } from "../../Utils/button";
 import ModalFilter from "../Filter/modalFilter";
 import { FunnelIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Popup from "reactjs-popup";
 import { createEmptyPlaylist, updatePlaylistWithoutFilter, getFilteredDBTracks, createPlaylistWithFilter, updatePlaylistWithFilter, deletePlaylist } from "../../../lib/actions";
 import { buildTrackFilterQuery } from "../../../lib/scripts/toolbox";
 import { Prisma } from "@prisma/client";
+import DeleteButton from "../../Utils/deleteButton";
 
 
 export default function PlaylistSettingsMenu ({
@@ -134,6 +135,7 @@ export default function PlaylistSettingsMenu ({
       onPlaylistChange();
       close();
     };
+
     const filterStatus = playlistData.filterData.filterRows.length > 0 ? "ON" : "OFF";
 
   return(
@@ -143,12 +145,7 @@ export default function PlaylistSettingsMenu ({
       <div className="flex h-10 w-full bg-slate-300 items-center justify-between">
         <div className="text-xl p-2">{headerText}</div>
         {mode === "edit"?
-          (<button 
-            type="button" 
-            className="flex items-center justify-center mr-1 w-8 h-8 bg-red-600 rounded-sm"
-            onClick={handleDelete}>
-              <TrashIcon className="w-6"/>
-            </button>)
+          (<DeleteButton handleDelete={handleDelete}/>)
           :null}
       </div>
       <div className="flex flex-col h-12 items-start justify-start text-white px-1">

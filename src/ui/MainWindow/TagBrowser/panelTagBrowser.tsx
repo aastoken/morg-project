@@ -5,6 +5,7 @@ import TagTypeContainer from "./tagTypeContainer";
 import { useDebouncedCallback } from "use-debounce";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import Popup from "reactjs-popup";
+import TagSettingsMenu from "./tagSettingsMenu";
 
 export default function PanelTagBrowser(){
   const tagTypes: DBTagType[] = [];
@@ -18,30 +19,45 @@ export default function PanelTagBrowser(){
 
   useEffect(() => {
     const getData = async () => {
-      try {
+      
         if(tagQuery.length>0){
           setOpen(true);
         }
         else{
           setOpen(false);
         }
-        //console.log("Tag Query:",tagQuery)
-        const result = await getDBTagsFromTagTypesByName(tagQuery);
-        //console.log("Result:",result)
         
-          setData(result);
+        fetchTagTypes();
         
         
         
         
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+      
     };
 
     getData();
   }, [tagQuery]);
 
+  const fetchTagTypes = async () => {
+    try {
+      const result = await getDBTagsFromTagTypesByName(tagQuery);
+      setData(result);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const handleTagTypeChange = (tagType?: DBTagType) => {
+    if(!tagType){
+      
+    }
+    else{
+      
+      
+    }
+    
+    fetchTagTypes();
+  };
   const popupId = useId();
   return(
     <>
@@ -59,7 +75,10 @@ export default function PanelTagBrowser(){
               marginTop:'55px'
             }}
           >
-            <div className="flex w-96 h-[415px] bg-red-500"></div>
+            {(close:any)=>(
+              <TagSettingsMenu mode={"create"} tagType={undefined} close ={close} onTagTypeChange={handleTagTypeChange}/>
+            )}
+            
           </Popup>
       </div>
       <div className="overflow-y-auto min-h-0 max-h-[calc(100%-68px)] flex flex-col items-start gap-2 pr-2 ml-1 py-1">

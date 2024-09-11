@@ -30,8 +30,8 @@ const renderComponent = (tab: string) => {
 };
 
   return(
-    <>
-        <div className='flex flex-row justify-around'>
+    <div className="bg-slate-800 h-full">
+        <div className='flex flex-row justify-around  bg-zinc-300'>
           <button 
           type='button' 
           className={`border-r-2 border-white transition-all duration-200 ease-in-out rounded-t-md ${selectedTab ==="tags" ?'w-4/6 bg-slate-800 text-white':'w-2/6 bg-slate-200 text-black'}`}
@@ -50,6 +50,8 @@ const renderComponent = (tab: string) => {
         </div>
         
         {renderComponent(selectedTab)}
-    </>
+        
+        
+    </div>
   )
 }

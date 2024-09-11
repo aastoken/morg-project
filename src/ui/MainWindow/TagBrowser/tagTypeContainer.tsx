@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { DBTagType, TagType } from '../../../lib/models/TagType';
 import { DBTag, Tag } from '../../../lib/models';
 import { hexToRgba } from '../../../lib/scripts/toolbox';
+import Popup from 'reactjs-popup';
+import TagSettingsMenu from './tagSettingsMenu';
 
 
 export default function TagTypeContainer({tag_type,isOpenByDefault, onTagClick, allowEdit}:{tag_type:DBTagType, isOpenByDefault:boolean, onTagClick: (tag: DBTag) => void, allowEdit: boolean}){
@@ -15,6 +17,17 @@ export default function TagTypeContainer({tag_type,isOpenByDefault, onTagClick, 
     setIsOpen(!isOpen);
   };
   const backdropColor = hexToRgba(tag_type.color, 0.3);
+
+  const renderEditButton = (allowEdit)=>{
+    if(allowEdit){
+      return <Popup trigger={<button type='button' className=''></button>}
+      modal
+      nested>
+        <TagSettingsMenu tagType={tag_type} />
+      </Popup>
+    }
+  }
+
   return(
     <div className="flex flex-col items-start w-full">
       <div
