@@ -5,13 +5,20 @@ import TagTypeContainer from "./tagTypeContainer";
 import { useDebouncedCallback } from "use-debounce";
 import { PencilSquareIcon } from "@heroicons/react/24/outline";
 import Popup from "reactjs-popup";
-import TagSettingsMenu from "./tagSettingsMenu";
+import TagTypeSettingsMenu from "./tagTypeSettingsMenu";
 
 export default function PanelTagBrowser(){
   const tagTypes: DBTagType[] = [];
   const [data, setData] = useState(tagTypes);
   const [tagQuery, setTagQuery] = useState("");
   const [open, setOpen] = useState(false);
+
+  const emptyTagType : DBTagType = {
+    id:-1,
+    color:'FFFFF',
+    name:'',
+    tags:[]
+  }
 
   const handleSearch= useDebouncedCallback((term: string) => {
     setTagQuery(term);
@@ -25,16 +32,9 @@ export default function PanelTagBrowser(){
         }
         else{
           setOpen(false);
-        }
-        
+        }        
         fetchTagTypes();
-        
-        
-        
-        
-      
     };
-
     getData();
   }, [tagQuery]);
 
@@ -58,7 +58,9 @@ export default function PanelTagBrowser(){
     
     fetchTagTypes();
   };
+
   const popupId = useId();
+
   return(
     <>
       <div className="flex flex-row mb-2 mt-1 h-8 items-center justify-between ml-1 mr-2 ">
@@ -76,7 +78,7 @@ export default function PanelTagBrowser(){
             }}
           >
             {(close:any)=>(
-              <TagSettingsMenu mode={"create"} tagType={undefined} close ={close} onTagTypeChange={handleTagTypeChange}/>
+              <TagTypeSettingsMenu mode={"create"} tagType={emptyTagType} close = {close} onTagTypeChange={handleTagTypeChange}/>
             )}
             
           </Popup>

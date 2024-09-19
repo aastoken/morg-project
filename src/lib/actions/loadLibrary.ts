@@ -6,7 +6,7 @@ import {File} from "node-taglib-sharp";
 import { Track, Tag, Genre, TagType, TrackDir, DBGenre, DBTag } from '../models';
 import { addNewTagtypesToExisting, checkNewGenres, checkNewTagTypeNames, checkNewTagTypes, checkNewTags, checkNewTracks, parseGenres, parseTags } from '../scripts';
 import { createGenres, getAllGenreNames } from './genreActions';
-import { createTagTypes, getAllTagTypeNames, getallTagTypes } from './tagTypeActions';
+import { createTagTypesFromTypeNames, getAllTagTypeNames, getallTagTypes } from './tagTypeActions';
 import { createTags, getAllTags } from './tagActions';
 import { createTrack, createTracks, getAllTracks } from './trackActions';
 
@@ -104,7 +104,7 @@ export async function updateDB(tracks: Track[]){
   }
   console.log("New TagTypes:",newTagTypeNames)
   if(newTagTypeNames.length > 0){
-    await createTagTypes(newTagTypeNames);
+    await createTagTypesFromTypeNames(newTagTypeNames);
   }
   console.log("New Tags:",newTags);
   if(newTags.length > 0){

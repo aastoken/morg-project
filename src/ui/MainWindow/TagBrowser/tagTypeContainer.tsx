@@ -3,7 +3,7 @@ import { DBTagType, TagType } from '../../../lib/models/TagType';
 import { DBTag, Tag } from '../../../lib/models';
 import { hexToRgba } from '../../../lib/scripts/toolbox';
 import Popup from 'reactjs-popup';
-import TagSettingsMenu from './tagSettingsMenu';
+import TagTypeSettingsMenu from './tagTypeSettingsMenu';
 
 
 export default function TagTypeContainer({tag_type,isOpenByDefault, onTagClick, allowEdit}:{tag_type:DBTagType, isOpenByDefault:boolean, onTagClick: (tag: DBTag) => void, allowEdit: boolean}){
@@ -23,7 +23,7 @@ export default function TagTypeContainer({tag_type,isOpenByDefault, onTagClick, 
       return <Popup trigger={<button type='button' className=''></button>}
       modal
       nested>
-        <TagSettingsMenu tagType={tag_type} />
+        <TagTypeSettingsMenu tagType={tag_type} />
       </Popup>
     }
   }

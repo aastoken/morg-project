@@ -1,4 +1,4 @@
-import { FilterData, DBGenre, DBTag, FilterRow, Genre, Playlist, PlaylistTrack, Tag, TagType, Track } from "../models";
+import { FilterData, DBGenre, DBTag, FilterRow, Genre, Playlist, PlaylistTrack, Tag, TagType, Track, DBTagType } from "../models";
 
 export function parseGenres(genresTag: string[]): Genre[]{
   const genres: Genre[] = [];
@@ -319,4 +319,13 @@ export function mapPlaylist(playlist): Playlist {
     filterData: mapAdvancedFilterData(playlist.filterData),
     tracks: playlist.tracks.map(mapPlaylistTrack)
   };
+}
+
+export function mapDBTagType(tagType): DBTagType {
+  return {
+    id: tagType.id,
+    name: tagType.name,
+    color: tagType.color, 
+    tags: tagType.tags.map(mapDBTag)
+  }
 }

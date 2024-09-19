@@ -34,7 +34,7 @@ export default function PlaylistSettingsMenu ({
       allConditions: true,
       filterRows: []
     },
-    tracks: playlist.tracks || [] // Initialize defaults if undefined, or maybe delete all this later
+    tracks: playlist.tracks || [] 
   });
 
   const [filterData, setFilterData] = useState<FilterData>(playlist.filterData ||{
@@ -42,101 +42,102 @@ export default function PlaylistSettingsMenu ({
     allConditions: true,
     filterRows: []
   });
-    useEffect(() => {
+
+  useEffect(() => {
+    if (mode === "create") {
+      setHeaderText("CREATE PLAYLIST");
+      setConfirmationButtonText("Create New Playlist");
+    } else if (mode === "edit") {
+      setHeaderText("EDIT PLAYLIST");
+      setConfirmationButtonText("Apply Changes");
+    }
+  }, [mode]);
+
+    
+  const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    setPlaylistData({
+      ...playlistData,
+      [name]: value
+    });
+  };
+
+  const handleApplyFilter = (appliedFilterData: FilterData) => {
+    setPlaylistData(prevData => ({
+      ...prevData,
+      filterData: appliedFilterData
+    }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const includeQuery = {
+      
+    }
+    //Logic to create/update playlist goes here
+    if (playlistData.filterData.filterRows.length === 0) {
       if (mode === "create") {
-        setHeaderText("CREATE PLAYLIST");
-        setConfirmationButtonText("Create New Playlist");
+        await createEmptyPlaylist({
+          name: playlistData.name,
+          description: playlistData.description,
+        });
       } else if (mode === "edit") {
-        setHeaderText("EDIT PLAYLIST");
-        setConfirmationButtonText("Apply Changes");
+        await updatePlaylistWithoutFilter({
+          playlistId: playlist.id,
+          name: playlistData.name,
+          description: playlistData.description,
+        });
       }
-    }, [mode]);
-
+    } else {
+      const filteredTracksQuery = buildTrackFilterQuery(
+        playlistData.filterData.filterRows,
+        playlistData.filterData.allConditions
+      );
+      const fullQuery: Prisma.trackFindManyArgs = {
+        include: {
+          genres: true,
+          tags: {
+            include:{
+              type:true
+            }
+          }      
+        },
+        where: filteredTracksQuery.where
+      }
+      const filteredTracks = await getFilteredDBTracks(fullQuery);
+  
+      if (mode === "create") {
+        await createPlaylistWithFilter({
+          name: playlistData.name,
+          description: playlistData.description,
+          filterData: playlistData.filterData,
+          tracks: filteredTracks,
+        });
+      } else if (mode === "edit") {
+        await updatePlaylistWithFilter({
+          playlistId: playlist.id,
+          name: playlistData.name,
+          description: playlistData.description,
+          filterData: playlistData.filterData,
+          tracks: filteredTracks,
+        });
+      }
+    }
     
-    const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const { name, value } = event.target;
-      setPlaylistData({
-        ...playlistData,
-        [name]: value
-      });
-    };
-
-    const handleApplyFilter = (appliedFilterData: FilterData) => {
-      setPlaylistData(prevData => ({
-        ...prevData,
-        filterData: appliedFilterData
-      }));
-    };
-
-    const handleSubmit = async (event: React.FormEvent) => {
-      event.preventDefault();
-      const includeQuery = {
-        
-      }
-      //Logic to create/update playlist goes here
-      if (playlistData.filterData.filterRows.length === 0) {
-        if (mode === "create") {
-          await createEmptyPlaylist({
-            name: playlistData.name,
-            description: playlistData.description,
-          });
-        } else if (mode === "edit") {
-          await updatePlaylistWithoutFilter({
-            playlistId: playlist.id,
-            name: playlistData.name,
-            description: playlistData.description,
-          });
-        }
-      } else {
-        const filteredTracksQuery = buildTrackFilterQuery(
-          playlistData.filterData.filterRows,
-          playlistData.filterData.allConditions
-        );
-        const fullQuery: Prisma.trackFindManyArgs = {
-          include: {
-            genres: true,
-            tags: {
-              include:{
-                type:true
-              }
-            }      
-          },
-          where: filteredTracksQuery.where
-        }
-        const filteredTracks = await getFilteredDBTracks(fullQuery);
+    onPlaylistChange(playlist);
     
-        if (mode === "create") {
-          await createPlaylistWithFilter({
-            name: playlistData.name,
-            description: playlistData.description,
-            filterData: playlistData.filterData,
-            tracks: filteredTracks,
-          });
-        } else if (mode === "edit") {
-          await updatePlaylistWithFilter({
-            playlistId: playlist.id,
-            name: playlistData.name,
-            description: playlistData.description,
-            filterData: playlistData.filterData,
-            tracks: filteredTracks,
-          });
-        }
-      }
-      
-      onPlaylistChange(playlist);
-      
-      
-      close(); // Close modal after applying
-    };
+    
+    close(); // Close modal after applying
+  };
 
-    const handleDelete = async (event) =>{
-      const deletedPlaylist = await deletePlaylist(playlist.id);
-      console.log("Deleted Playlist: ",deletedPlaylist)
-      onPlaylistChange();
-      close();
-    };
+  const handleDelete = async (event) =>{
+    const deletedPlaylist = await deletePlaylist(playlist.id);
+    console.log("Deleted Playlist: ",deletedPlaylist)
+    onPlaylistChange();
+    close();
+  };
 
-    const filterStatus = playlistData.filterData.filterRows.length > 0 ? "ON" : "OFF";
+  const filterStatus = playlistData.filterData.filterRows.length > 0 ? "ON" : "OFF";
 
   return(
     <form 
