@@ -1,7 +1,8 @@
-import { Track } from "../../../lib/models";
+import { DBTrack } from "../../../lib/models";
+import GeneralInfo from "./generalInfo";
 
 
-export default function TrackDetailsWindow({selectedTrack}:{selectedTrack:Track|null}){
+export default function TrackDetailsWindow({selectedTrack}:{selectedTrack:DBTrack|null}){
 
   if (!selectedTrack) {
     return (
@@ -14,12 +15,8 @@ export default function TrackDetailsWindow({selectedTrack}:{selectedTrack:Track|
   }
 
   return (
-    <div className="flex flex-col items-center justify-center text-center h-full w-full">
-      <h2 className="text-xl">Track Details</h2>
-      <p><strong>Filename:</strong> {selectedTrack.filename}</p>
-      <p><strong>Artist:</strong> {selectedTrack.artist}</p>
-      <p><strong>Album:</strong> {selectedTrack.album}</p>
-      <p><strong>Length:</strong> {selectedTrack.length}</p>
+    <div className="flex flex-col items-top justify-left  h-full w-full mt-4 mx-4">
+      <GeneralInfo selectedTrack={selectedTrack}/>
       
     </div>
   );

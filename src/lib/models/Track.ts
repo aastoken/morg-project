@@ -8,7 +8,7 @@ export type Track = {
   artist?:    string;
   length:     number;
   bpm?:       number;
-  genres:     Genre[];  
+  genres:     Genre[];
   tags:       Tag[];
   album?:     string;
   label?:     string;

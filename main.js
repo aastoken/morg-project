@@ -28,6 +28,7 @@ async function createWindow() {
   mainWindow.loadURL(startUrl);
 }
 
+
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
