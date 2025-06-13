@@ -15,9 +15,14 @@ export default function TrackDetailsWindow({selectedTrack}:{selectedTrack:DBTrac
   }
 
   return (
-    <div className="flex flex-col items-top justify-left  h-full w-full mt-4 mx-4">
-      <GeneralInfo selectedTrack={selectedTrack}/>
+    <div className="flex flex-col items-top justify-left  h-full max-w-full pt-4 pb-2 px-4 space-y-2">
+      <div className="shrink-0">
+        <GeneralInfo selectedTrack={selectedTrack}/>
+      </div>
       
+      <div className="flex flex-col flex-grow items-top justify-left w-full p-1 bg-sky-50 border-2 border-blue-900 space-y-2">
+
+      </div>
     </div>
   );
 }

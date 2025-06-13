@@ -15,8 +15,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${dosis.className} flex w-full max-h-screen h-screen bg-zinc-300  `} >
+    <html lang="en" className="h-full">
+      <body className={`${dosis.className} flex w-full max-h-screen h-full bg-zinc-300  `} >
         
         {children}
         </body>
