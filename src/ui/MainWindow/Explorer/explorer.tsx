@@ -3,10 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import ExplorerTable from "./explorerTable";
 import Search from "./search";
 import FilterButton from "./filterButton";
-import { Track } from "../../../lib/models";
+import { DBTrack, Track } from "../../../lib/models";
 import { Prisma } from "@prisma/client";
 
-export default function Explorer({playlistFilter, onTrackSelect}:{playlistFilter, onTrackSelect: (track: Track) => void}){
+export default function Explorer({playlistFilter, onTrackSelect}:{playlistFilter, onTrackSelect: (track: DBTrack) => void}){
   
   const [searchFilter, setSearchFilter] = useState<any>({});
   const [advancedFilter, setAdvancedFilter] = useState<any>({});

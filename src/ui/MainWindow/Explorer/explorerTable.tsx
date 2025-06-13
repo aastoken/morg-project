@@ -2,7 +2,7 @@
 import { Resizable } from "react-resizable";
 import { useColumns } from "../../../lib/hooks";
 import { Column } from "../../../lib/models/Column";
-import { Track } from "../../../lib/models";
+import { DBTrack, Track } from "../../../lib/models";
 import { useEffect, useState } from "react";
 import { getAllTracks, getFilteredDBTracks, getFilteredTracks } from "../../../lib/actions";
 import { initcolumns } from "../../../lib/models/columns";
@@ -15,9 +15,9 @@ import { getTagTypesFromTagArray } from "../../../lib/scripts/toolbox";
 const cabin = Cabin({ subsets: ["latin"] });
 
 
-export default function ExplorerTable({explorerQuery, onTrackSelect}:{explorerQuery, onTrackSelect : (track:Track)=> void}){
+export default function ExplorerTable({explorerQuery, onTrackSelect}:{explorerQuery, onTrackSelect : (track:DBTrack)=> void}){
   
-  const tracks: Track[] = []
+  const tracks: DBTrack[] = []
   const initcols: Column[] = initcolumns;
   
   const [data, setData] = useState(tracks);
@@ -56,7 +56,7 @@ export default function ExplorerTable({explorerQuery, onTrackSelect}:{explorerQu
     }
   };
 
-  const handleRowClick = (track: Track) => {
+  const handleRowClick = (track: DBTrack) => {
     onTrackSelect(track);
   };
 
