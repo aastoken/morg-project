@@ -1,4 +1,5 @@
 import { DBTrack } from "../../../lib/models";
+import AudioPlayer from "./audioPlayer";
 import GeneralInfo from "./generalInfo";
 
 
@@ -20,8 +21,8 @@ export default function TrackDetailsWindow({selectedTrack}:{selectedTrack:DBTrac
         <GeneralInfo selectedTrack={selectedTrack}/>
       </div>
       
-      <div className="flex flex-col flex-grow items-top justify-left w-full p-1 bg-sky-50 border-2 border-blue-900 space-y-2">
-
+      <div className="flex flex-col flex-grow items-top justify-left w-full p-1 overflow-hidden bg-sky-50 border-2 border-blue-900 space-y-2">
+        <AudioPlayer selectedTrack={selectedTrack}/>
       </div>
     </div>
   );

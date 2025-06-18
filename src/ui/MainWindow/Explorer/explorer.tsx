@@ -12,7 +12,7 @@ export default function Explorer({playlistFilter, onTrackSelect}:{playlistFilter
   const [advancedFilter, setAdvancedFilter] = useState<any>({});
 
   const mergeQueries = (
-    playlistFilter: Prisma.trackFindManyArgs | undefined,//Si no es necesario incluir un grupo select: probar solo con trackWhereInput 
+    playlistFilter: Prisma.trackFindManyArgs | undefined,//Si no es necesario incluir un grupo include: probar solo con trackWhereInput 
     advancedFilter: Prisma.trackFindManyArgs | undefined,
     searchFilter: Prisma.trackFindManyArgs | undefined,
   ): Prisma.trackFindManyArgs => {

@@ -33,6 +33,12 @@ export default function GeneralInfo({selectedTrack}:{selectedTrack:DBTrack|null}
                 <p className="text-xl"><strong>{selectedTrack.name || "Unknown Title"}</strong></p>
                 <p className="text-lg">{selectedTrack.artist || "Unknown Artist"}</p>
                 <p className="text-sm text-slate-500">{selectedTrack.filename}</p>
+            </div> 
+            <div className="flex flex-col flex-wrap  w-1/12 h-full bg-slate-300 px-2">
+                <p className="text-xl">BPM</p>
+                <p className="text-lg">{selectedTrack.bpm}</p>
+                <p className="text-xl">KEY</p>
+                <p className="text-lg">{selectedTrack.key}</p>
             </div>
             <div className="flex flex-col w-1/12 flex-grow overflow-y-auto bg-slate-300">
                 <p className="text-xl">Genre</p>
@@ -48,12 +54,7 @@ export default function GeneralInfo({selectedTrack}:{selectedTrack:DBTrack|null}
 
                 </div>
             </div>
-            <div className="flex flex-col flex-wrap  w-1/12 h-full bg-slate-300 px-2">
-                <p className="text-xl">BPM</p>
-                <p className="text-lg">{selectedTrack.bpm}</p>
-                <p className="text-xl">KEY</p>
-                <p className="text-lg">{selectedTrack.key}</p>
-            </div>
+           
             
         </div>
         <div className="flex flex-row w-full justify-left space-x-2">

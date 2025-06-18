@@ -1,7 +1,7 @@
 'use server';
 import prisma  from "../../../prisma/client";
 import { FilterData } from "../models";
-import { mapAdvancedFilterData } from "../../lib/scripts/data_utils"
+import { mapAdvancedFilterData } from "../scripts/data_utils"
 
 
 export async function createAdvancedFilterData(
