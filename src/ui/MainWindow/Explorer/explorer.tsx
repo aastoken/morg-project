@@ -6,7 +6,7 @@ import FilterButton from "./filterButton";
 import { DBTrack, Track } from "../../../lib/models";
 import { Prisma } from "@prisma/client";
 
-export default function Explorer({playlistFilter, onTrackSelect}:{playlistFilter, onTrackSelect: (track: DBTrack) => void}){
+export default function Explorer({playlistFilter, onTrackSelect, refreshKey}:{playlistFilter, onTrackSelect: (track: DBTrack) => void, refreshKey: number}){
   
   const [searchFilter, setSearchFilter] = useState<any>({});
   const [advancedFilter, setAdvancedFilter] = useState<any>({});
@@ -49,7 +49,7 @@ export default function Explorer({playlistFilter, onTrackSelect}:{playlistFilter
     const updatedQuery = mergeQueries(playlistFilter, advancedFilter, searchFilter)
     setExplorerQuery(updatedQuery)
     console.log("Updated Explorer Query", updatedQuery)
-  }, [playlistFilter, advancedFilter, searchFilter]);
+  }, [playlistFilter, advancedFilter, searchFilter, refreshKey]);
 
   return(
     <div  className="flex flex-col max-h-full h-full">

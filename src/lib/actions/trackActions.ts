@@ -4,7 +4,7 @@ import  prisma  from "../../../prisma/client";
 import { getDBGenres } from "./genreActions";
 import { getDBTags } from "./tagActions";
 import { revalidatePath } from 'next/cache';
-import { formatDateTime, millisToMinutes } from '../scripts/data_utils';
+import { formatDateTime, millisToMinutes, minutesToMillis } from '../scripts/data_utils';
 import { Prisma, PrismaPromise } from "@prisma/client";
 
 export async function createTrack(track:Track) {
@@ -113,6 +113,41 @@ export async function updateTrack(track:Track){
   })
 }
 
+export async function updateTrackFromDBTrack(dbTrack: DBTrack) {
+  const connectGenresArray = dbTrack.genres.map(g => ({ id: g.id }));
+
+  const connectTagsArray = dbTrack.tags.map(t => ({ id: t.id }));
+
+  const updatedTrack = await prisma.track.update({
+    where: { id: dbTrack.id },
+    data: {
+      filename: dbTrack.filename,
+      folder: dbTrack.folder,
+      name: dbTrack.name ?? undefined,
+      artist: dbTrack.artist ?? undefined,
+      length: dbTrack.length,
+      bpm: dbTrack.bpm ?? undefined,
+      genres: {
+        set: [],           // Clear old connections
+        connect: connectGenresArray,
+      },
+      tags: {
+        set: [],           // Clear old connections
+        connect: connectTagsArray,
+      },
+      album: dbTrack.album ?? undefined,
+      label: dbTrack.label ?? undefined,
+      key: dbTrack.key ?? undefined,
+      dateAdded: new Date(dbTrack.dateAdded),
+      rating: dbTrack.rating ?? undefined,
+      comment: dbTrack.comment ?? undefined,
+      bitrate: dbTrack.bitrate,
+    },
+  });
+
+  return updatedTrack;
+}
+
 export async function getAllTracks(): Promise <Track[]>{
   const tracks = await prisma.track.findMany({
     include: {
@@ -130,7 +165,7 @@ export async function getAllTracks(): Promise <Track[]>{
     folder:     track.folder,
     name:       track.name ?? undefined,
     artist:     track.artist ?? undefined,
-    length:     millisToMinutes(track.length),
+    length:     track.length,
     bpm:        track.bpm ?? undefined,
     genres:     track.genres.map(g => ({
                   name: g.name
@@ -142,7 +177,7 @@ export async function getAllTracks(): Promise <Track[]>{
     album:      track.album ?? undefined,
     label:      track.label ?? undefined,
     key:        track.key ?? undefined,
-    dateAdded:  formatDateTime(track.dateAdded?.toISOString()) ?? undefined,
+    dateAdded:  track.dateAdded?.toISOString() ?? undefined,
     rating:     track.rating ?? undefined,
     comment:    track.comment ?? undefined, 
     bitrate:    track.bitrate
@@ -190,7 +225,7 @@ export async function getFilteredTracks(query: Prisma.trackFindManyArgs): Promis
     folder:     track.folder,
     name:       track.name ?? undefined,
     artist:     track.artist ?? undefined,
-    length:     millisToMinutes(track.length),
+    length:     track.length,
     bpm:        track.bpm ?? undefined,
     genres:     track.genres.map(g => ({
                   name: g.name
@@ -202,7 +237,7 @@ export async function getFilteredTracks(query: Prisma.trackFindManyArgs): Promis
     album:      track.album ?? undefined,
     label:      track.label ?? undefined,
     key:        track.key ?? undefined,
-    dateAdded:  formatDateTime(track.dateAdded?.toISOString()) ?? undefined,
+    dateAdded:  track.dateAdded?.toISOString() ?? undefined,
     rating:     track.rating ?? undefined,
     comment:    track.comment ?? undefined, 
     bitrate:    track.bitrate
@@ -218,7 +253,7 @@ export async function getFilteredDBTracks(query: Prisma.trackFindManyArgs): Prom
     folder:     track.folder,
     name:       track.name ?? undefined,
     artist:     track.artist ?? undefined,
-    length:     millisToMinutes(track.length),
+    length:     track.length,
     bpm:        track.bpm ?? undefined,
     genres:     track.genres.map(g => ({
                   id: g.id,
@@ -235,7 +270,7 @@ export async function getFilteredDBTracks(query: Prisma.trackFindManyArgs): Prom
     album:      track.album ?? undefined,
     label:      track.label ?? undefined,
     key:        track.key ?? undefined,
-    dateAdded:  formatDateTime(track.dateAdded?.toISOString()) ?? undefined,
+    dateAdded:  track.dateAdded?.toISOString() ?? undefined,
     rating:     track.rating ?? undefined,
     comment:    track.comment ?? undefined, 
     bitrate:    track.bitrate

@@ -45,7 +45,7 @@ export default function AudioPlayer({ selectedTrack }: { selectedTrack: DBTrack 
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
-        e.preventDefault();
+        //e.preventDefault(); //I still need to write spaces
         waveSurfer.playPause();
       }
     };

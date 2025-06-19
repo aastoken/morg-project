@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { DBTagType } from "../../../lib/models";
+import { DBTag, DBTagType } from "../../../lib/models";
 import DeleteButton from "../../Utils/deleteButton";
 import { deleteTagType } from "../../../lib/actions";
 import { ColorPicker, useColor, IColor } from "react-color-palette";
@@ -41,10 +41,6 @@ export default function TagTypeSettingsMenu ({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const includeQuery = {
-      
-    }
-    //Logic to create/update playlist goes here
     
     
     onTagTypeChange(tagType);
@@ -84,9 +80,17 @@ export default function TagTypeSettingsMenu ({
     typeName: tagTypeData.name
   }
 
-  const handleTagChange = ()=>{
-
-  }
+  const handleTagChange = (newTag?: DBTag) => {
+    if (!newTag) return;
+    setTagTypeData((prev) => {
+      // if it already exists, replace it; otherwise append
+      const exists = prev.tags.some((t) => t.id === newTag.id);
+      const updatedTags = exists
+        ? prev.tags.map((t) => (t.id === newTag.id ? newTag : t))
+        : [...prev.tags, newTag];
+      return { ...prev, tags: updatedTags };
+    });
+  };
   return (
     <form 
     className="flex flex-col w-[300px] h-[400px] bg-slate-600 border-4 border-white"
@@ -146,7 +150,14 @@ export default function TagTypeSettingsMenu ({
             
           </Popup>
         </div>
-        <div className="flex flex-grow bg-slate-200 m-1"></div>
+        <div className="flex flex-grow gap-2 bg-slate-200 m-1 p-2">
+          {/* actually render your tags here: */}
+          {tagTypeData.tags.map((t) => (
+            <span key={t.id} className="px-2 py-1 bg-blue-400 text-white rounded">
+              {t.name}
+            </span>
+          ))}
+        </div>
 
       </div>
       <Button type='submit'>{confirmationButtonText}</Button>

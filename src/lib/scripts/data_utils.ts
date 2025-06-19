@@ -212,6 +212,14 @@ export function millisToMinutes(milliseconds : number){
   return result
 }
 
+export function minutesToMillis(minutesString: string): number {
+  const [minutesPart, secondsPart] = minutesString.split(' min ');
+  const minutes = parseInt(minutesPart, 10);
+  const seconds = secondsPart ? parseInt(secondsPart.replace(' s', ''), 10) : 0;
+  
+  return (minutes * 60 + seconds) * 1000;
+}
+
 export function formatDateTime(dateTimeStr) {
   const date = new Date(dateTimeStr);
 

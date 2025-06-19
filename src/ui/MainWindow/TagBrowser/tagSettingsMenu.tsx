@@ -36,10 +36,10 @@ export default function TagSettingsMenu ({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    event.stopPropagation();
     const includeQuery = {
       
     }
-    //Logic to create/update playlist goes here
     
     
     onTagChange(tag);

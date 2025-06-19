@@ -11,6 +11,7 @@ import { Cabin } from "next/font/google";
 import GenresVisualizer from "../GenreBrowser/genresVisualizer";
 import TagTypesVisualizer from "../TagBrowser/tagTypesVisualizer";
 import { getTagTypesFromTagArray } from "../../../lib/scripts/toolbox";
+import { formatDateTime, millisToMinutes } from "../../../lib/scripts";
 
 const cabin = Cabin({ subsets: ["latin"] });
 
@@ -51,7 +52,12 @@ export default function ExplorerTable({explorerQuery, onTrackSelect}:{explorerQu
       return <TagTypesVisualizer tag_types={getTagTypesFromTagArray(cellValue)} onTagSelect={()=>{}} />;
     } else if (columnName === 'genres') {
       return <GenresVisualizer genres={cellValue} onGenreSelect={()=>{}} />;
-    } else {
+    } else if (columnName === 'length'){
+      return millisToMinutes(cellValue)
+    } else if (columnName === 'dateAdded'){
+      return formatDateTime(cellValue)
+    }
+    else {
       return typeof cellValue === 'object' ? JSON.stringify(cellValue) : cellValue;
     }
   };
