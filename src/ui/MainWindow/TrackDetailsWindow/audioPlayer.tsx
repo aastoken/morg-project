@@ -12,12 +12,16 @@ export default function AudioPlayer({ selectedTrack }: { selectedTrack: DBTrack 
   const [zoomLevel, setZoomLevel] = useState(0);
   const instanceReadyRef = useRef<Promise<void> | null>(null);
   const resolveInstanceReady = useRef<(() => void) | null>(null);
-  const [allowWaveformInteract, setAllowWaveformInteract] = useState(false)
-  // Mount effect: create WaveSurfer
+  const allowInteractRef = useRef(false);
+
+  useEffect(() => {
+    allowInteractRef.current = !!selectedTrack;
+  }, [selectedTrack]);
+
+  
   useEffect(() => {
     if (!waveformRef.current) return;
 
-    // Create a new promise to signal readiness
     instanceReadyRef.current = new Promise<void>(resolve => {
       resolveInstanceReady.current = resolve;
     });
@@ -44,15 +48,15 @@ export default function AudioPlayer({ selectedTrack }: { selectedTrack: DBTrack 
     resolveInstanceReady.current?.();
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === 'Space') {
+      if (e.code === 'Space'&& allowInteractRef.current) {
         //e.preventDefault(); //I still need to write spaces
-        if(!allowWaveformInteract) {return} 
+        
         waveSurfer.playPause();
       }
     };
 
     const handleWheel = (e: WheelEvent) => {
-      if(!allowWaveformInteract) {return} 
+      if (!allowInteractRef.current) return; 
       if (waveformRef.current?.contains(e.target as Node)) {
         e.preventDefault();
         const delta = Math.sign(e.deltaY);
@@ -87,11 +91,9 @@ export default function AudioPlayer({ selectedTrack }: { selectedTrack: DBTrack 
 
   // Load new track when ready
   useEffect(() => {
-    if (!selectedTrack) {
-      setAllowWaveformInteract(false);
-      return;}
-
-    setAllowWaveformInteract(true);
+    if (!selectedTrack) {return;}
+    
+   
     const loadTrack = async () => {
       if (!instanceReadyRef.current) return;
 
