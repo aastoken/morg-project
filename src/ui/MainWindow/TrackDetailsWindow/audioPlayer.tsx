@@ -6,10 +6,20 @@ import Hover from 'wavesurfer.js/dist/plugins/hover.esm.js';
 import { BsZoomIn, BsZoomOut, BsPlayFill } from "react-icons/bs";
 import config from '../../../../morg_config/config.json';
 
+const formatTime = (seconds: number) => {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  const mm = m.toString().padStart(2, '0');
+  const ss = s.toString().padStart(2, '0');
+  return `${mm}:${ss}`;
+};
+
 export default function AudioPlayer({ selectedTrack }: { selectedTrack: DBTrack | null }) {
   const waveformRef = useRef<HTMLDivElement | null>(null);
   const waveSurferRef = useRef<WaveSurfer | null>(null);
   const [zoomLevel, setZoomLevel] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const instanceReadyRef = useRef<Promise<void> | null>(null);
   const resolveInstanceReady = useRef<(() => void) | null>(null);
   const allowInteractRef = useRef(false);
@@ -46,6 +56,21 @@ export default function AudioPlayer({ selectedTrack }: { selectedTrack: DBTrack 
 
     waveSurferRef.current = waveSurfer;
     resolveInstanceReady.current?.();
+
+    
+    waveSurfer.on('ready', () => {
+      const d = waveSurfer.getDuration();
+      setDuration(d);
+    });
+    
+    waveSurfer.on('audioprocess', (time: number) => {
+      setCurrentTime(time);
+    });
+    
+    waveSurfer.on('seeking', (progress: number) => {
+      const time = progress * waveSurfer.getDuration();
+      setCurrentTime(time);
+    });
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space'&& allowInteractRef.current) {
@@ -155,6 +180,9 @@ export default function AudioPlayer({ selectedTrack }: { selectedTrack: DBTrack 
         >
           <BsZoomOut /> Zoom Out
         </button>
+        <div className="ml-auto bg-gray-700 text-white font-mono p-4">
+          {formatTime(currentTime)} / {formatTime(duration)}
+        </div>
       </div>
     </>
   );
