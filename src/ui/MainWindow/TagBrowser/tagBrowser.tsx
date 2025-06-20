@@ -47,7 +47,7 @@ export default function TagBrowser({onTagSelect}:{onTagSelect :(tag: DBTag)=> vo
       
       <div className="overflow-y-auto min-h-0 max-h-[calc(100%-38px)] flex flex-col items-start gap-2 pr-2 ml-1">
         
-        {data.map((tag_type,index) => (<TagTypeContainer key={index} tag_type={tag_type} isOpenByDefault={open} onTagClick={onTagSelect} allowEdit = {false}/>))}
+        {data.map((tag_type,index) => (<TagTypeContainer key={index} tag_type={tag_type} isOpenByDefault={open} onTagClick={onTagSelect} onTagTypeChange={()=>{}}/>))}
         
       </div>
     </>

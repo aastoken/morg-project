@@ -4,7 +4,12 @@ import PlaylistBrowser from './PlaylistBrowser/playlistBrowser';
 import PanelTagBrowser from './TagBrowser/panelTagBrowser';
 import TagGenreSelectorContainer from './tagGenreSelectorContainer';
 
-export default function SidePanel({setPlaylistFilter}){
+export default function SidePanel({setPlaylistFilter, onRefreshExplorer}: 
+{
+  setPlaylistFilter: (f: any) => void;
+  onRefreshExplorer: () => void;
+})
+{
 
 
   return(
@@ -14,7 +19,7 @@ export default function SidePanel({setPlaylistFilter}){
         <MenuSelector/>
       </div>
       <div className='flex-grow w-full overflow-hidden h-full flex-col'>
-        <TagGenreSelectorContainer/>
+        <TagGenreSelectorContainer onRefreshExplorer={onRefreshExplorer}/>
       </div>
       <div className="flex h-[55%] min-h-[55%] w-full flex-col bg-slate-800 border-t-2 border-amber-300">
         <PlaylistBrowser setPlaylistFilter={setPlaylistFilter}/>

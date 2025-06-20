@@ -1,6 +1,7 @@
 'use server';
 import { DBTag, Tag, TagType } from "../models";
 import  prisma  from "../../../prisma/client";
+import { mapDBTag } from "../scripts";
 
 //Tags--------------------------------------------------------------
 export async function createTag(tag: Tag){
@@ -113,6 +114,54 @@ export async function getAllTagNames(): Promise <string[]>{
   return tagNames;
 }
 
-export async function updateTags(tags: Tag[]){
+export async function updateTags(tags: DBTag[]): Promise<DBTag[]> {
+  // Upsert each tag: if `id > 0` update, otherwise create
+  const results = await Promise.all(
+    tags.map(tag =>
+      prisma.tag.upsert({
+        where: { id: tag.id },
+        create: {
+          name: tag.name,         
+          typeId: tag.typeId,
+        },
+        update: {
+          name: tag.name,
+          typeId: tag.typeId,
+        },
+        include: {
+          type: true, 
+        },
+      })
+    )
+  );
 
+
+  return results.map((t) => ({
+    id:       t.id,
+    name:     t.name,
+    color:    t.type.color,  
+    typeName: t.type.name,
+    typeId:   t.typeId,
+  }));
+}
+
+export async function deleteTag(id: number): Promise<DBTag> {
+  // delete and fetch the deleted row along with its tag_type
+  const deleted = await prisma.tag.delete({
+    where: { id },
+    include: {
+      type: true,  
+    },
+  })
+
+  
+  const result: DBTag = {
+    id:       deleted.id,
+    name:     deleted.name,
+    color:    deleted.type.color,   
+    typeId:   deleted.typeId,
+    typeName: deleted.type.name,
+  }
+
+  return result
 }

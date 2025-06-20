@@ -12,7 +12,7 @@ export default function AudioPlayer({ selectedTrack }: { selectedTrack: DBTrack 
   const [zoomLevel, setZoomLevel] = useState(0);
   const instanceReadyRef = useRef<Promise<void> | null>(null);
   const resolveInstanceReady = useRef<(() => void) | null>(null);
-
+  const [allowWaveformInteract, setAllowWaveformInteract] = useState(false)
   // Mount effect: create WaveSurfer
   useEffect(() => {
     if (!waveformRef.current) return;
@@ -46,11 +46,13 @@ export default function AudioPlayer({ selectedTrack }: { selectedTrack: DBTrack 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.code === 'Space') {
         //e.preventDefault(); //I still need to write spaces
+        if(!allowWaveformInteract) {return} 
         waveSurfer.playPause();
       }
     };
 
     const handleWheel = (e: WheelEvent) => {
+      if(!allowWaveformInteract) {return} 
       if (waveformRef.current?.contains(e.target as Node)) {
         e.preventDefault();
         const delta = Math.sign(e.deltaY);
@@ -85,8 +87,11 @@ export default function AudioPlayer({ selectedTrack }: { selectedTrack: DBTrack 
 
   // Load new track when ready
   useEffect(() => {
-    if (!selectedTrack) return;
+    if (!selectedTrack) {
+      setAllowWaveformInteract(false);
+      return;}
 
+    setAllowWaveformInteract(true);
     const loadTrack = async () => {
       if (!instanceReadyRef.current) return;
 

@@ -75,6 +75,37 @@ export async function getDBGenresByName(genreName: string): Promise<DBGenre[]>{
   return genres.map(genre => ({id: genre.id, name: genre.name, color: genre.color}));
 }
 
-export async function updateGenre(genre: Genre){
+export async function updateGenre(genre: DBGenre): Promise<DBGenre> {
+  const updated = await prisma.genre.update({
+    where: { id: genre.id },
+    data: {
+      name:  genre.name,
+      color: genre.color,
+    },
+  });
+  return {
+    id:    updated.id,
+    name:  updated.name,
+    color: updated.color,
+  };
+}
 
+export async function deleteGenre(id: number): Promise<DBGenre> {
+  
+  const existing = await prisma.genre.findUnique({
+    where:   { id },
+    select: { id: true, name: true, color: true },
+  });
+  if (!existing) {
+    throw new Error(`Genre #${id} not found`);
+  }
+
+
+  await prisma.genre.delete({ where: { id } });
+
+  return {
+    id:    existing.id,
+    name:  existing.name,
+    color: existing.color,
+  };
 }

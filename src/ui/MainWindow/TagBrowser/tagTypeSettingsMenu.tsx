@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { DBTag, DBTagType } from "../../../lib/models";
 import DeleteButton from "../../Utils/deleteButton";
-import { deleteTagType } from "../../../lib/actions";
+import { deleteTagType, updateTagType, createTagType } from "../../../lib/actions"; 
 import { ColorPicker, useColor, IColor } from "react-color-palette";
 import "react-color-palette/css";
 import Popup from "reactjs-popup";
@@ -43,7 +43,13 @@ export default function TagTypeSettingsMenu ({
     event.preventDefault();
     
     
-    onTagTypeChange(tagType);
+    let result: DBTagType;
+    if (mode === "create") {
+      result = await createTagType(tagTypeData);
+    } else {
+      result = await updateTagType(tagTypeData);
+    }
+    onTagTypeChange(result);
     
     
     close(); // Close modal after applying
@@ -70,6 +76,7 @@ export default function TagTypeSettingsMenu ({
       ...tagTypeData,
       color: newColor.hex // Update the tagTypeData color to the hex value
     });
+    console.log("New color: ", tagTypeData.color)
   };
 
   const emptyTag = {
@@ -80,17 +87,20 @@ export default function TagTypeSettingsMenu ({
     typeName: tagTypeData.name
   }
 
-  const handleTagChange = (newTag?: DBTag) => {
-    if (!newTag) return;
+  const handleTagChange = (changedTag: DBTag, action: 'add'|'update'|'delete') => {
     setTagTypeData((prev) => {
-      // if it already exists, replace it; otherwise append
-      const exists = prev.tags.some((t) => t.id === newTag.id);
-      const updatedTags = exists
-        ? prev.tags.map((t) => (t.id === newTag.id ? newTag : t))
-        : [...prev.tags, newTag];
-      return { ...prev, tags: updatedTags };
-    });
-  };
+      let nextTags = prev.tags
+      if (action === 'add') {
+        nextTags = [...prev.tags, changedTag]
+      } else if (action === 'update') {
+        nextTags = prev.tags.map((t) => t.id === changedTag.id ? changedTag : t)
+      } else if (action === 'delete') {
+        nextTags = prev.tags.filter((t) => t.id !== changedTag.id)
+      }
+      return { ...prev, tags: nextTags }
+    })
+  }
+
   return (
     <form 
     className="flex flex-col w-[300px] h-[400px] bg-slate-600 border-4 border-white"
@@ -128,8 +138,7 @@ export default function TagTypeSettingsMenu ({
         </Popup>
       </div>
       
-      {/*Add here the tags creation/visualizer window */}
-      <div className="flex flex-col flex-grow mt-3">
+      <div className="flex flex-col flex-grow mt-3 overflow-hidden">
         <div className="flex flex-row w-full text-white justify-between pl-1 pr-3">
           TAGS
           <Popup
@@ -140,7 +149,7 @@ export default function TagTypeSettingsMenu ({
             modal
             nested
             contentStyle={{
-              marginLeft: '285px',
+              marginLeft: '400px',
               marginTop:'55px'
             }}
           >
@@ -150,13 +159,38 @@ export default function TagTypeSettingsMenu ({
             
           </Popup>
         </div>
-        <div className="flex flex-grow gap-2 bg-slate-200 m-1 p-2">
-          {/* actually render your tags here: */}
-          {tagTypeData.tags.map((t) => (
-            <span key={t.id} className="px-2 py-1 bg-blue-400 text-white rounded">
-              {t.name}
-            </span>
+        <div className="flex-1 bg-slate-200 m-1 p-2 overflow-y-auto">
+          <div className="flex flex-wrap gap-2">
+          {tagTypeData.tags.map((tag, index) => (
+             <Popup
+              
+              trigger={
+                <div
+                  style={{ backgroundColor: tag.color }}
+                  className="flex rounded-md h-6 w-fit p-2 items-center mt-1 cursor-pointer"
+                >
+                  {tag.name}
+                </div>
+              }
+              modal
+              nested
+              contentStyle={{
+                marginLeft: '400px',
+                marginTop: '55px',
+              }}
+            >
+              {(close: any) => (
+                <TagSettingsMenu
+                  mode="edit"
+                  tag={tag}
+                  close={close}
+                  onTagChange={handleTagChange}
+                />
+              )}
+            </Popup>
+            
           ))}
+        </div>
         </div>
 
       </div>

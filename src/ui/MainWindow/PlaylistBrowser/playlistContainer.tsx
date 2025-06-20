@@ -32,7 +32,7 @@ export default function PlaylistContainer({
       </div>
       <div className="flex flex-row items-center text-sm">
         <div className="px-2">
-          {playlist.filterData.filterRows.length > 0 ? 'AUTO':null}
+          {/*playlist.filterData.filterRows.length > 0 ? 'AUTO':null*/}
         </div>
         <Popup
           
@@ -43,7 +43,8 @@ export default function PlaylistContainer({
           modal
           nested
           contentStyle={{
-            marginLeft: '285px'
+            marginBottom:'300px',
+            marginLeft: '300px',
           }}
         >{(close:any)=>(
           <PlaylistSettingsMenu 

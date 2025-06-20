@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { DBTag, DBTagType } from "../../../lib/models";
 import DeleteButton from "../../Utils/deleteButton";
-import { deleteTagType } from "../../../lib/actions";
+import { deleteTag, deleteTagType, updateTags } from "../../../lib/actions";
 import { ColorPicker, useColor, IColor } from "react-color-palette";
 import "react-color-palette/css";
 import Popup from "reactjs-popup";
@@ -18,7 +18,7 @@ export default function TagSettingsMenu ({
   mode: string, 
   tag : DBTag, 
   close:()=> void, 
-  onTagChange:(tag?:DBTag)=> void
+  onTagChange:(tag:DBTag, action:'add'|'update'|'delete')=> void
 }){
   const [headerText, setHeaderText] = useState("");
   const [confirmationButtonText, setConfirmationButtonText] = useState("");
@@ -37,21 +37,24 @@ export default function TagSettingsMenu ({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    const includeQuery = {
-      
+    
+    
+    if (mode === "edit") {
+      const [updated] = await updateTags([tagData]);
+      onTagChange(updated, "update");
+    } else {
+      // just update locally; the parent will create everything in createTagType()
+      onTagChange(tagData, "add");
     }
-    
-    
-    onTagChange(tag);
     
     
     close(); // Close modal after applying
   };
 
-  const handleDelete = async (event) =>{
-    const deletedTagType = await deleteTag(tag.id);
-    console.log("Deleted Tag: ",deletedTag)
-    onTagChange();
+  const handleDelete = async (event: React.MouseEvent) =>{
+    event.preventDefault()
+    event.stopPropagation()
+    onTagChange(tag, 'delete')
     close();
   };
 
@@ -91,10 +94,10 @@ export default function TagSettingsMenu ({
       
       {/*Add here the tag reassign selection dropdown */}
       <div className="flex flex-col flex-grow mt-3 text-white">
-        Reassign Tag to Type 
+        {/* Reassign Tag to Type 
         <select>
 
-        </select>
+        </select> */}
 
       </div>
       <Button type='submit'>{confirmationButtonText}</Button>

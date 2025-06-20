@@ -170,16 +170,16 @@ export default function PlaylistSettingsMenu ({
           onChange={handleInputChange}
         />
       </div>
-      <span className="flex flex-grow flex-col items-start align-middle px-1 mt-5"> 
-        <div className="flex">
-          <div className="text-white text-xl bg-slate-900 px-2 rounded-l-sm">
-          AUTOMATIC PLAYLIST
-        </div>
-        <div className={` text-xl px-2  rounded-r-sm  ${filterStatus === "ON" ? "bg-green-500" : "bg-red-500"}`}>
+      <span className="flex flex-grow flex-col items-start align-middle px-1 mt-5 "> 
+        <div className="flex text-white text-xl bg-slate-900 justify-between items-center space-x-2 w-full h-8 rounded-l-sm">
+          <div className="">
+            PLAYLIST FILTER OPTIONS
+          </div>
+        {/* <div className={` text-xl px-2  rounded-r-sm  ${filterStatus === "ON" ? "bg-green-500" : "bg-red-500"}`}>
         {filterStatus}
-        </div>
+        </div> */}
         <Popup
-        trigger ={<button className="rounded-sm items-center px-2 h-7 ml-2 bg-amber-300" type='button'><PencilSquareIcon className="w-6"/></button>}
+        trigger ={<button className="rounded-sm items-center px-4 h-full  bg-amber-300" type='button'><PencilSquareIcon className="w-6"/></button>}
         modal
         nested>
           {(close:any)=>(
@@ -192,9 +192,9 @@ export default function PlaylistSettingsMenu ({
             />)}
         </Popup>
         </div>
-        <div className="text-white">
+        {/* <div className="text-white">
           Applying one or more conditions will turn this playlist into an automatic playlist. 
-        </div>
+        </div> */}
                            
       </span>
       <div className="text-white">

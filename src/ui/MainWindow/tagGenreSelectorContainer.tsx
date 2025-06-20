@@ -5,7 +5,11 @@ import PanelGenreBrowser from "./GenreBrowser/panelGenreBrowser";
 
 
 
-export default function TagGenreSelectorContainer (){
+export default function TagGenreSelectorContainer ({
+  onRefreshExplorer,
+}: {
+  onRefreshExplorer: () => void;
+}){
 const [selectedTab, setSelectedTab] = useState("tags");
 
 const handleTabClick = (tab:string)=>{
@@ -20,9 +24,9 @@ const handleTabClick = (tab:string)=>{
 
 const renderComponent = (tab: string) => {
   if (tab === 'tags') {
-    return <PanelTagBrowser/>
+    return <PanelTagBrowser onRefreshExplorer={onRefreshExplorer}/>
   } else if (tab === 'genres') {
-    return <PanelGenreBrowser />
+    return <PanelGenreBrowser onRefreshExplorer={onRefreshExplorer}/>
   }
   else{
     return(<></>)

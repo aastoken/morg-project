@@ -104,7 +104,8 @@ export default function PlaylistBrowser({setPlaylistFilter}){
           nested
           contentStyle={{
             flex:'true',
-            marginLeft: '285px',
+            marginBottom:'300px',
+            marginLeft: '300px',
             alignSelf: "center"
           }}
         >

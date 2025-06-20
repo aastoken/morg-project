@@ -32,7 +32,7 @@ export default function Home() {
 
   return (
     <div className='flex w-full h-full'>
-      <SidePanel setPlaylistFilter = {setPlaylistFilter}/>
+      <SidePanel setPlaylistFilter = {setPlaylistFilter} onRefreshExplorer={triggerExplorerRefresh}/>
       
       <div className="flex flex-col flex-grow h-full w-0 overflow-hidden">
    

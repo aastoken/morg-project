@@ -4,11 +4,16 @@ import GenreContainer from "./genreContainer";
 import { useEffect, useId, useState } from "react";
 import { getDBGenresByName, getGenresByName } from "../../../lib/actions";
 import Popup from "reactjs-popup";
+import GenreSettingsMenu from "./genreSettingsMenu";
 
 
 
 
-export default function PanelGenreBrowser(){
+export default function PanelGenreBrowser({
+  onRefreshExplorer, 
+}: {
+  onRefreshExplorer: () => void;
+}){
 
   const genres: DBGenre[] = [];
   const [data, setData] = useState(genres);
@@ -18,25 +23,47 @@ export default function PanelGenreBrowser(){
     setGenreQuery(term);
   }, 300);
 
-  useEffect(() => {
-    const getData = async () => {
-      try {       
-        //console.log("Tag Query:",tagQuery)
-        const result = await getDBGenresByName(genreQuery);
-        //console.log("Result:",result)
-        
-          setData(result);
-        
-        
-        
-        
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
 
-    getData();
+  
+  
+    const emptyGenre = {
+      id: -1, 
+      name: "", 
+      color: "#ffffff" 
+    }
+  
+  const fetchData = async () => {
+    try {
+      const result = await getDBGenresByName(genreQuery);
+      setData(result);
+    } catch (error) {
+      console.error("Error fetching genres:", error);
+    }
+  };
+  useEffect(() => {
+    fetchData();
   }, [genreQuery]);
+
+  const handleGenreChange = (updated?: DBGenre) => {
+  
+    if (updated) {
+      setData((prev) => {
+        const exists = prev.some((g) => g.id === updated.id);
+        if (exists) {
+          // update in place
+          return prev.map((g) => (g.id === updated.id ? updated : g));
+        } else {
+          // prepend new
+          return [updated, ...prev];
+        }
+      });
+      
+    } else {
+      
+      fetchData();
+    }
+    onRefreshExplorer();
+  };
 
   const popupId = useId();
   return(
@@ -55,13 +82,20 @@ export default function PanelGenreBrowser(){
             marginTop:'55px'
           }}
         >
-          <div className="flex w-96 h-[415px] bg-red-500"></div>
+           {(close) => (
+          <GenreSettingsMenu
+            mode="create"
+            genre={emptyGenre}
+            close={close}
+            onGenreChange={handleGenreChange}
+            />
+          )}
         </Popup>
     </div>
       
       <div className="overflow-y-auto min-h-0 max-h-[calc(100%-68px)] flex flex-col items-start gap-2 pr-2 ml-1 py-1">
         
-        {data.map((genre,index) => (<GenreContainer key={index} genre={genre} onGenreClick={()=>{}}/>))}
+        {data.map((genre,index) => (<GenreContainer key={index} genre={genre} onGenreClick={()=>{}} onGenreChange={handleGenreChange}/>))}
         
       </div>
     </>
