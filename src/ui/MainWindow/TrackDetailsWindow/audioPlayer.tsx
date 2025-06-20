@@ -68,7 +68,7 @@ export default function AudioPlayer({ selectedTrack }: { selectedTrack: DBTrack 
     });
     
     waveSurfer.on('seeking', (progress: number) => {
-      const time = progress * waveSurfer.getDuration();
+      const time = progress ;
       setCurrentTime(time);
     });
 
